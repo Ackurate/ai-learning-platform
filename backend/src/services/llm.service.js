@@ -1,40 +1,74 @@
-// Gọi LLM API. Mặc định dùng định dạng Messages API của Anthropic.
-// Nếu đổi nhà cung cấp khác, chỉ cần sửa file này.
+// Gọi LLM qua NVIDIA NIM (API tương thích OpenAI).
+// Cấu hình trong .env: LLM_BASE_URL, LLM_API_KEY, LLM_MODEL
 
-const API_URL = 'https://api.anthropic.com/v1/messages'
+const BASE_URL = process.env.LLM_BASE_URL || 'https://integrate.api.nvidia.com/v1';
+const API_KEY = process.env.LLM_API_KEY;
+const MODEL = process.env.LLM_MODEL || 'nvidia/nemotron-3-ultra-550b-a55b';
+const TIMEOUT_MS = Number(process.env.LLM_TIMEOUT_MS) || 60000;
 
-const SYSTEM_PROMPT = `Bạn là trợ giảng lập trình cơ bản, tập trung vào ngôn ngữ C++, trả lời bằng tiếng Việt.
-- Giải thích ngắn gọn, dễ hiểu, có ví dụ code nhỏ khi cần.
-- Khi học viên đang làm sai một câu quiz, hãy gợi ý hướng suy nghĩ, không nói thẳng đáp án.
-- Nếu câu hỏi không liên quan đến lập trình, lịch sự từ chối và đưa cuộc trò chuyện về bài học.
-- Nếu không chắc chắn, hãy nói rõ thay vì đoán.`
+const SYSTEM_PROMPT = `Bạn là trợ giảng lập trình C++ cho người mới học. Trả lời bằng tiếng Việt, rõ ràng, ngắn gọn.
+Quy tắc:
+- Giải thích khái niệm bằng ví dụ C++ ngắn, dễ hiểu.
+- Nếu người học đang làm quiz, KHÔNG nói thẳng đáp án đúng. Hãy gợi ý hướng suy nghĩ và hỏi lại để người học tự tìm ra.
+- Nếu không chắc chắn, nói rõ là không chắc chắn thay vì đoán.
+- Chỉ trả lời trong phạm vi lập trình C++ cơ bản; từ chối lịch sự các câu hỏi ngoài phạm vi.`;
 
+/**
+ * Hỏi LLM về một câu hỏi lập trình.
+ * @param {object} params
+ * @param {string} params.question  Câu hỏi của người học
+ * @param {string} [params.context] Ngữ cảnh (tên chương, nội dung câu quiz).
+ *                                  KHÔNG đưa correct_answer vào đây khi quiz chưa nộp.
+ * @returns {Promise<string>} Nội dung trả lời
+ */
 export async function askLLM({ question, context = '' }) {
-  if (!process.env.LLM_API_KEY) {
-    throw Object.assign(new Error('Chưa cấu hình LLM_API_KEY trong backend/.env'), { status: 503 })
+  if (!API_KEY) {
+    throw new Error('Thiếu LLM_API_KEY trong file .env');
   }
 
-  const userContent = context ? `Ngữ cảnh bài học:\n${context}\n\nCâu hỏi của học viên:\n${question}` : question
+  const userContent = context
+    ? `Ngữ cảnh:\n${context}\n\nCâu hỏi của người học:\n${question}`
+    : question;
 
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'x-api-key': process.env.LLM_API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: process.env.LLM_MODEL,
-      max_tokens: 800,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userContent }],
-    }),
-  })
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  let res;
+  try {
+    res = await fetch(`${BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: userContent },
+        ],
+        temperature: 0.2,
+        max_tokens: 1024,
+      }),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error('LLM phản hồi quá lâu, vui lòng thử lại');
+    }
+    throw new Error(`Không kết nối được LLM: ${err.message}`);
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (!res.ok) {
-    throw Object.assign(new Error('Dịch vụ AI đang lỗi, thử lại sau'), { status: 502 })
+    const detail = await res.text().catch(() => '');
+    throw new Error(`LLM trả lỗi ${res.status}: ${detail.slice(0, 300)}`);
   }
 
-  const data = await res.json()
-  return data.content?.[0]?.text ?? ''
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content ?? '';
+
+  // Một số model suy luận trả về phần "<think>...</think>"; bỏ đi trước khi hiển thị cho người học.
+  return content.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 }

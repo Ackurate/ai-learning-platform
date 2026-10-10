@@ -1,6 +1,6 @@
 -- Tạo Database cho dự án (utf8mb4 để lưu tiếng Việt đầy đủ)
 CREATE DATABASE IF NOT EXISTS AI_Learning_Platform
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE AI_Learning_Platform;
 
 -- 1. Bảng users (Tài khoản người dùng)
