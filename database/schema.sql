@@ -59,3 +59,5 @@ CREATE TABLE IF NOT EXISTS progress (
     FOREIGN KEY (chapter_id) REFERENCES chapters(chapter_id) ON DELETE CASCADE,
     UNIQUE (user_id, chapter_id) -- Đảm bảo mỗi user chỉ có 1 bản ghi tiến độ cho mỗi chương
 );
+USE AI_Learning_Platform;
+SHOW TABLES;
