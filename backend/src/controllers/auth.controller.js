@@ -7,15 +7,42 @@ const sign = (user) =>
 
 const publicUser = (u) => ({ user_id: u.user_id, username: u.username, email: u.email, role: u.role })
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// Kiểm tra dữ liệu đăng ký. Trả về thông báo lỗi (string) hoặc null nếu hợp lệ.
+// Giữ đồng bộ với validate() trong frontend/src/pages/Register.jsx.
+// Độ dài username (50) và email (100) khớp với bảng users trong schema.sql.
+export function validateRegister({ username, email, password } = {}) {
+  if (typeof username !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+    return 'Vui lòng nhập đủ username, email và mật khẩu'
+  }
+
+  const name = username.trim()
+  const mail = email.trim()
+  if (!name || !mail || !password) {
+    return 'Vui lòng nhập đủ username, email và mật khẩu'
+  }
+  if (name.length > 50) return 'Tên đăng nhập tối đa 50 ký tự'
+  if (mail.length > 100) return 'Email tối đa 100 ký tự'
+  if (!EMAIL_RE.test(mail)) return 'Email không hợp lệ'
+
+  if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+    return 'Mật khẩu cần ít nhất 8 ký tự, gồm chữ và số'
+  }
+  // bcrypt chỉ dùng 72 byte đầu của mật khẩu
+  if (password.length > 72) return 'Mật khẩu tối đa 72 ký tự'
+
+  return null
+}
+
 export async function register(req, res, next) {
   try {
-    const { username, email, password } = req.body
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: 'Vui lòng nhập đủ username, email và mật khẩu' })
-    }
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Mật khẩu tối thiểu 6 ký tự' })
-    }
+    const invalid = validateRegister(req.body)
+    if (invalid) return res.status(400).json({ message: invalid })
+
+    const username = req.body.username.trim()
+    const email = req.body.email.trim()
+    const { password } = req.body
 
     const hash = await bcrypt.hash(password, 10)
     const [result] = await pool.execute(
@@ -32,6 +59,7 @@ export async function register(req, res, next) {
   }
 }
 
+// Đăng nhập không kiểm tra độ mạnh mật khẩu, để tài khoản cũ (mật khẩu 6 ký tự) vẫn vào được.
 export async function login(req, res, next) {
   try {
     const { email, password } = req.body

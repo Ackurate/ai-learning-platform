@@ -1,0 +1,387 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap');
+
+/* Khung chung sau đăng nhập — theo Figma BYTE//CPP (Sidebar + Header).
+   Breakpoint giống Home/Login: >=1120 desktop · 640–1119 tablet · <640 mobile. */
+
+/* Khung này có sidebar + header riêng → ẩn navbar chung.
+   (Nếu navbar chung của bạn không dùng class .navbar, đổi selector này cho đúng.) */
+body:has(.app-shell) .navbar {
+  display: none;
+}
+
+.app-shell {
+  --as-primary: #4f46e5;
+  --as-primary-hover: #4338ca;
+  --as-ink: #192239;
+  --as-muted: #637087;
+  --as-line: #e3e7f0;
+  --as-page: #f7f8fc;
+  --as-tint: #eef0ff;
+  --as-tint-line: #c8c5fa;
+  --as-gap: 28px;
+
+  display: flex;
+  min-height: 100vh;
+  background: var(--as-page);
+  color: var(--as-ink);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell *,
+.app-shell *::before,
+.app-shell *::after {
+  box-sizing: border-box;
+}
+
+.app-shell h1,
+.app-shell h2,
+.app-shell h3,
+.app-shell p,
+.app-shell hr {
+  margin: 0;
+  padding: 0;
+}
+
+.app-shell a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-shell :focus-visible {
+  outline: 2px solid var(--as-primary);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.as-skip {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--as-primary);
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+.as-skip:focus {
+  top: 12px;
+}
+
+/* ------------------------------- Sidebar ------------------------------- */
+.as-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  flex: 0 0 248px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 248px;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 24px 20px;
+  background: #fff;
+  border-right: 1px solid var(--as-line);
+}
+
+.as-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.as-brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--as-primary);
+  color: #fff;
+  font: 700 17px/normal 'Roboto Mono', monospace;
+}
+.as-brand-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.as-brand-name {
+  font: 700 19px/normal 'Roboto Mono', monospace;
+  white-space: nowrap;
+}
+.as-brand-name span {
+  color: var(--as-primary);
+}
+.as-brand-sub {
+  font-size: 11px;
+  color: var(--as-muted);
+}
+
+.as-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.as-group-label {
+  font: 400 10px/normal 'Roboto Mono', monospace;
+  color: var(--as-muted);
+  white-space: nowrap;
+}
+.as-divider {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background: var(--as-line);
+}
+
+.as-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 44px;
+  padding: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--as-ink);
+  font: 500 14px/normal 'Inter', sans-serif;
+  white-space: nowrap;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.as-item:hover {
+  background: var(--as-page);
+}
+.as-item.is-active {
+  background: var(--as-tint);
+  color: var(--as-primary);
+  font-weight: 600;
+}
+
+.as-scrim {
+  display: none;
+}
+
+/* --------------------------------- Main --------------------------------- */
+.as-main {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.as-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 80px;
+  padding: 0 40px;
+  background: #fff;
+  border-bottom: 1px solid var(--as-line);
+}
+.as-head-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+}
+.as-head-title strong {
+  font-size: 18px;
+  font-weight: 600;
+}
+.as-head-title span {
+  font-size: 11px;
+  color: var(--as-muted);
+}
+.as-head-brand {
+  display: none;
+}
+
+.as-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--as-ink);
+}
+.as-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 99px;
+  background: var(--as-tint);
+  color: var(--as-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+.as-account-name {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+}
+.as-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--as-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--as-ink);
+  cursor: pointer;
+}
+
+.as-content {
+  flex: 1 1 auto;
+  padding: 36px 40px 24px;
+}
+.as-content-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--as-gap);
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.as-signoff {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  font-size: 11px;
+  color: var(--as-muted);
+}
+.as-signoff-code {
+  font: 400 10px/normal 'Roboto Mono', monospace;
+  color: var(--as-primary);
+}
+
+/* ============================ TABLET (640–1119) ============================ */
+@media (max-width: 1119px) {
+  .as-head-title {
+    display: none;
+  }
+  .as-head-brand {
+    display: flex;
+  }
+  .as-header {
+    padding: 0 24px;
+  }
+  .as-content {
+    padding: 32px 24px 24px;
+  }
+}
+
+/* Sidebar thu gọn (rail 88px): chỉ icon + nhãn nhỏ bên dưới */
+@media (min-width: 640px) and (max-width: 1119px) {
+  .as-sidebar {
+    flex-basis: 88px;
+    width: 88px;
+    padding: 24px 8px;
+  }
+  .as-sidebar-brand {
+    justify-content: center;
+  }
+  .as-sidebar-brand .as-brand-id,
+  .as-group-label {
+    display: none;
+  }
+  .as-item {
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    height: 62px;
+    padding: 6px;
+    font-size: 10px;
+    text-align: center;
+  }
+}
+
+/* ============================== MOBILE (<640) ============================== */
+@media (max-width: 639px) {
+  .app-shell {
+    --as-gap: 24px;
+  }
+
+  /* Sidebar → ngăn kéo bên trái, mở bằng nút menu */
+  .as-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 60;
+    width: 280px;
+    max-width: 85vw;
+    height: auto;
+    box-shadow: 0 16px 48px rgba(25, 34, 57, 0.18);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.2s ease, visibility 0s linear 0.2s;
+  }
+  .app-shell.is-nav-open .as-sidebar {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.2s ease;
+  }
+  .as-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(25, 34, 57, 0.4);
+  }
+
+  .as-header {
+    height: 72px;
+    padding: 0 20px;
+  }
+  .as-head-brand .as-brand-name {
+    font-size: 17px;
+  }
+  .as-account {
+    display: none;
+  }
+  .as-burger {
+    display: flex;
+  }
+  .as-content {
+    padding: 28px 20px;
+  }
+  .as-signoff {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .as-sidebar,
+  .as-item {
+    transition: none !important;
+  }
+}
