@@ -1,0 +1,686 @@
+{
+  "backend/package.json": {
+    "mtime": 1791636265.964914,
+    "seen": 1792821789.9179564,
+    "ast_hash": "4200db9b286e118be12d97ccb209c60a",
+    "semantic_hash": "4200db9b286e118be12d97ccb209c60a"
+  },
+  "backend/scripts/setup-db.js": {
+    "mtime": 1791636090.1291828,
+    "seen": 1792821789.9179664,
+    "ast_hash": "fdaa86ffe93cdc8136b48204b8d0d542",
+    "semantic_hash": "fdaa86ffe93cdc8136b48204b8d0d542"
+  },
+  "backend/src/app.js": {
+    "mtime": 1791561202.0,
+    "seen": 1792821789.9179707,
+    "ast_hash": "e90c4e6d3b6cce04671d44478a70fd49",
+    "semantic_hash": "e90c4e6d3b6cce04671d44478a70fd49"
+  },
+  "backend/src/config/db.js": {
+    "mtime": 1791800310.1878297,
+    "seen": 1792821789.9179735,
+    "ast_hash": "a8ac414389d7eb7850259e4aed12e9d5",
+    "semantic_hash": "a8ac414389d7eb7850259e4aed12e9d5"
+  },
+  "backend/src/config/env.js": {
+    "mtime": 1791809237.172373,
+    "seen": 1792821789.9179766,
+    "ast_hash": "92f08f720116f342c30f24d8519a6cb3",
+    "semantic_hash": "92f08f720116f342c30f24d8519a6cb3"
+  },
+  "backend/src/controllers/ai.controller.js": {
+    "mtime": 1791800289.3635838,
+    "seen": 1792821789.9179788,
+    "ast_hash": "6941c092d6f27ec4a20f77fb0e744b29",
+    "semantic_hash": "6941c092d6f27ec4a20f77fb0e744b29"
+  },
+  "backend/src/controllers/auth.controller.js": {
+    "mtime": 1791648496.6705952,
+    "seen": 1792821789.9179814,
+    "ast_hash": "24d4ba647dd8b526865b638996f6e2fc",
+    "semantic_hash": "24d4ba647dd8b526865b638996f6e2fc"
+  },
+  "backend/src/controllers/chapters.controller.js": {
+    "mtime": 1791561217.0,
+    "seen": 1792821789.9179835,
+    "ast_hash": "ea8f0ccfc6a6fc98d168cd2ed3f3b605",
+    "semantic_hash": "ea8f0ccfc6a6fc98d168cd2ed3f3b605"
+  },
+  "backend/src/controllers/progress.controller.js": {
+    "mtime": 1791561227.0,
+    "seen": 1792821789.9179854,
+    "ast_hash": "b88133e0f63160f8d62f97b816c7236f",
+    "semantic_hash": "b88133e0f63160f8d62f97b816c7236f"
+  },
+  "backend/src/controllers/questions.controller.js": {
+    "mtime": 1791561219.0,
+    "seen": 1792821789.9179876,
+    "ast_hash": "47de425aaa628c1829d233b139130839",
+    "semantic_hash": "47de425aaa628c1829d233b139130839"
+  },
+  "backend/src/controllers/quiz.controller.js": {
+    "mtime": 1791561225.0,
+    "seen": 1792821789.91799,
+    "ast_hash": "0833adcbf188e512da97f9cf53552d24",
+    "semantic_hash": "0833adcbf188e512da97f9cf53552d24"
+  },
+  "backend/src/middleware/auth.js": {
+    "mtime": 1791561205.0,
+    "seen": 1792821789.9179924,
+    "ast_hash": "ad87451fe95eb486a737f7cf07ef11d2",
+    "semantic_hash": "ad87451fe95eb486a737f7cf07ef11d2"
+  },
+  "backend/src/middleware/errorHandler.js": {
+    "mtime": 1791561206.0,
+    "seen": 1792821789.9179945,
+    "ast_hash": "7ec03d51438216328edb7d8e99dd2be8",
+    "semantic_hash": "7ec03d51438216328edb7d8e99dd2be8"
+  },
+  "backend/src/routes/ai.routes.js": {
+    "mtime": 1791561235.0,
+    "seen": 1792821789.9179966,
+    "ast_hash": "b1d3b81d96192874a30e17ab63a717f5",
+    "semantic_hash": "b1d3b81d96192874a30e17ab63a717f5"
+  },
+  "backend/src/routes/auth.routes.js": {
+    "mtime": 1791561231.0,
+    "seen": 1792821789.9179986,
+    "ast_hash": "46a3b5dadf33c7a1e6f2c6c15e31deef",
+    "semantic_hash": "46a3b5dadf33c7a1e6f2c6c15e31deef"
+  },
+  "backend/src/routes/chapters.routes.js": {
+    "mtime": 1791561232.0,
+    "seen": 1792821789.9180005,
+    "ast_hash": "70d818e91dd63702e992ae82871b352b",
+    "semantic_hash": "70d818e91dd63702e992ae82871b352b"
+  },
+  "backend/src/routes/progress.routes.js": {
+    "mtime": 1791561234.0,
+    "seen": 1792821789.9180024,
+    "ast_hash": "2f4ab742ba2169a01eebdd0f7ee5db61",
+    "semantic_hash": "2f4ab742ba2169a01eebdd0f7ee5db61"
+  },
+  "backend/src/routes/questions.routes.js": {
+    "mtime": 1791561233.0,
+    "seen": 1792821789.9180045,
+    "ast_hash": "9d9b9b264beb64d84a3cfce7e2a9a422",
+    "semantic_hash": "9d9b9b264beb64d84a3cfce7e2a9a422"
+  },
+  "backend/src/routes/quiz.routes.js": {
+    "mtime": 1791561233.0,
+    "seen": 1792821789.9180064,
+    "ast_hash": "02824c64cc1f2036c03c69d2b39b18b6",
+    "semantic_hash": "02824c64cc1f2036c03c69d2b39b18b6"
+  },
+  "backend/src/server.js": {
+    "mtime": 1791800285.5761113,
+    "seen": 1792821789.9180086,
+    "ast_hash": "2d1facf82c00e719ba0b9fe493dbfb22",
+    "semantic_hash": "2d1facf82c00e719ba0b9fe493dbfb22"
+  },
+  "backend/src/services/llm.service.js": {
+    "mtime": 1791640416.8456335,
+    "seen": 1792821789.918011,
+    "ast_hash": "b54770674923a7d6c605f57f2322608f",
+    "semantic_hash": "b54770674923a7d6c605f57f2322608f"
+  },
+  "backend/src/tests/health.test.js": {
+    "mtime": 1791809237.2352068,
+    "seen": 1792821789.9180129,
+    "ast_hash": "73886676368483001fb5ac36a1857040",
+    "semantic_hash": "73886676368483001fb5ac36a1857040"
+  },
+  "database/schema.sql": {
+    "mtime": 1792644930.679543,
+    "seen": 1792821789.9180157,
+    "ast_hash": "345feea8c98b13583ff3f8558150eb96",
+    "semantic_hash": "345feea8c98b13583ff3f8558150eb96"
+  },
+  "database/seed.sql": {
+    "mtime": 1792820307.0445888,
+    "seen": 1792821789.9180176,
+    "ast_hash": "85eaf8ef265a24551934a8d566ea77da",
+    "semantic_hash": "85eaf8ef265a24551934a8d566ea77da"
+  },
+  "frontend/package.json": {
+    "mtime": 1791561240.0,
+    "seen": 1792821789.9180195,
+    "ast_hash": "8600ba1dc29cf8c411dab457e3adde3f",
+    "semantic_hash": "8600ba1dc29cf8c411dab457e3adde3f"
+  },
+  "frontend/src/App.jsx": {
+    "mtime": 1791561246.0,
+    "seen": 1792821789.9180217,
+    "ast_hash": "723d3e0a002ad6104ab610008e767f5d",
+    "semantic_hash": "723d3e0a002ad6104ab610008e767f5d"
+  },
+  "frontend/src/api/client.js": {
+    "mtime": 1791561247.0,
+    "seen": 1792821789.9180233,
+    "ast_hash": "d35821e7ea58a81108312f7a0411edac",
+    "semantic_hash": "d35821e7ea58a81108312f7a0411edac"
+  },
+  "frontend/src/components/AppShell.jsx": {
+    "mtime": 1791722519.0,
+    "seen": 1792821789.9180255,
+    "ast_hash": "e700c9b55f16082265b8d818a945e5dc",
+    "semantic_hash": "e700c9b55f16082265b8d818a945e5dc"
+  },
+  "frontend/src/components/AskAI.jsx": {
+    "mtime": 1791561254.0,
+    "seen": 1792821789.9180274,
+    "ast_hash": "ac0c8997c69bb7c87f83a6fcc2e729dd",
+    "semantic_hash": "ac0c8997c69bb7c87f83a6fcc2e729dd"
+  },
+  "frontend/src/components/AuthFields.jsx": {
+    "mtime": 1791648684.4542532,
+    "seen": 1792821789.9180295,
+    "ast_hash": "f297f5fa30ba84805703ad48a77638ff",
+    "semantic_hash": "f297f5fa30ba84805703ad48a77638ff"
+  },
+  "frontend/src/components/AuthLayout.jsx": {
+    "mtime": 1791648683.9058926,
+    "seen": 1792821789.9180315,
+    "ast_hash": "d3502335fe09a8fe0ab1fd8e8e375871",
+    "semantic_hash": "d3502335fe09a8fe0ab1fd8e8e375871"
+  },
+  "frontend/src/components/ChapterCard.jsx": {
+    "mtime": 1791722525.0,
+    "seen": 1792821789.9180334,
+    "ast_hash": "e4ccbe9038145266bdde2b6d6b02a2b8",
+    "semantic_hash": "e4ccbe9038145266bdde2b6d6b02a2b8"
+  },
+  "frontend/src/components/HomeIcons.jsx": {
+    "mtime": 1791722502.0,
+    "seen": 1792821789.9180355,
+    "ast_hash": "247b82e35a63c4d18070862906f592b4",
+    "semantic_hash": "247b82e35a63c4d18070862906f592b4"
+  },
+  "frontend/src/components/Navbar.jsx": {
+    "mtime": 1791561251.0,
+    "seen": 1792821789.9180374,
+    "ast_hash": "2c2c8facb19a47ce79f73ad2b23af995",
+    "semantic_hash": "2c2c8facb19a47ce79f73ad2b23af995"
+  },
+  "frontend/src/components/QuestionCard.jsx": {
+    "mtime": 1791561257.0,
+    "seen": 1792821789.9180396,
+    "ast_hash": "2bb50b25e449ecfa897037b7103b40d0",
+    "semantic_hash": "2bb50b25e449ecfa897037b7103b40d0"
+  },
+  "frontend/src/context/AuthContext.jsx": {
+    "mtime": 1791561249.0,
+    "seen": 1792821789.9180417,
+    "ast_hash": "7010945341cf7baca5b92a8a36851fd7",
+    "semantic_hash": "7010945341cf7baca5b92a8a36851fd7"
+  },
+  "frontend/src/main.jsx": {
+    "mtime": 1791648657.9795606,
+    "seen": 1792821789.9180434,
+    "ast_hash": "29038a88fc7c9238436c234a7a35f3da",
+    "semantic_hash": "29038a88fc7c9238436c234a7a35f3da"
+  },
+  "frontend/src/pages/ChapterList.jsx": {
+    "mtime": 1791722533.0,
+    "seen": 1792821789.9180455,
+    "ast_hash": "62032196237b206e9c0b10aeeab39d20",
+    "semantic_hash": "62032196237b206e9c0b10aeeab39d20"
+  },
+  "frontend/src/pages/Dashboard.jsx": {
+    "mtime": 1791561276.0,
+    "seen": 1792821789.9180474,
+    "ast_hash": "9e4bbee51def52ddc8f7c99e72870c99",
+    "semantic_hash": "9e4bbee51def52ddc8f7c99e72870c99"
+  },
+  "frontend/src/pages/Home.jsx": {
+    "mtime": 1791629148.0,
+    "seen": 1792821789.9180493,
+    "ast_hash": "97b2c789faef3c17fbc86b04cac33ce3",
+    "semantic_hash": "97b2c789faef3c17fbc86b04cac33ce3"
+  },
+  "frontend/src/pages/Lesson.jsx": {
+    "mtime": 1791561268.0,
+    "seen": 1792821789.918052,
+    "ast_hash": "de4c5a22b70a7993cf90c5e07b6cbc04",
+    "semantic_hash": "de4c5a22b70a7993cf90c5e07b6cbc04"
+  },
+  "frontend/src/pages/Login.jsx": {
+    "mtime": 1791648549.2469983,
+    "seen": 1792821789.9180539,
+    "ast_hash": "06878e82d089707effb0f1428b6420e4",
+    "semantic_hash": "06878e82d089707effb0f1428b6420e4"
+  },
+  "frontend/src/pages/Quiz.jsx": {
+    "mtime": 1791561272.0,
+    "seen": 1792821789.918056,
+    "ast_hash": "7313f98b3eb9d9674ba68f807b88719d",
+    "semantic_hash": "7313f98b3eb9d9674ba68f807b88719d"
+  },
+  "frontend/src/pages/Register.jsx": {
+    "mtime": 1791648851.7587378,
+    "seen": 1792821789.918059,
+    "ast_hash": "b07fa7f5eec9098c3021ba0f7a344dae",
+    "semantic_hash": "b07fa7f5eec9098c3021ba0f7a344dae"
+  },
+  "frontend/src/utils/chapters.js": {
+    "mtime": 1791722508.0,
+    "seen": 1792821789.918061,
+    "ast_hash": "81a23b560cf421ebc31ba2b8fd0c3c2c",
+    "semantic_hash": "81a23b560cf421ebc31ba2b8fd0c3c2c"
+  },
+  "frontend/src/visualizations/ArrayViz.jsx": {
+    "mtime": 1791561283.0,
+    "seen": 1792821789.9180632,
+    "ast_hash": "3f8a92449321b94fadc0e4f79ee873b5",
+    "semantic_hash": "3f8a92449321b94fadc0e4f79ee873b5"
+  },
+  "frontend/src/visualizations/LoopViz.jsx": {
+    "mtime": 1791561282.0,
+    "seen": 1792821789.9180648,
+    "ast_hash": "f67b59d073744ee6e0c393269d36b27e",
+    "semantic_hash": "f67b59d073744ee6e0c393269d36b27e"
+  },
+  "frontend/src/visualizations/RecursionViz.jsx": {
+    "mtime": 1791561284.0,
+    "seen": 1792821789.918067,
+    "ast_hash": "d73f464a30a6e51dbf3d3c2b7da20b39",
+    "semantic_hash": "d73f464a30a6e51dbf3d3c2b7da20b39"
+  },
+  "frontend/src/visualizations/SortingViz.jsx": {
+    "mtime": 1791561285.0,
+    "seen": 1792821789.918069,
+    "ast_hash": "bc763861ed9efe8b18799914e37d8dce",
+    "semantic_hash": "bc763861ed9efe8b18799914e37d8dce"
+  },
+  "frontend/src/visualizations/TreeGraphViz.jsx": {
+    "mtime": 1791561285.0,
+    "seen": 1792821789.918071,
+    "ast_hash": "c86ed680e367813b9d7a9e9356b348c2",
+    "semantic_hash": "c86ed680e367813b9d7a9e9356b348c2"
+  },
+  "frontend/vite.config.js": {
+    "mtime": 1791561241.0,
+    "seen": 1792821789.9180732,
+    "ast_hash": "cd54336ed93a2102ae8ab7c492a8778d",
+    "semantic_hash": "cd54336ed93a2102ae8ab7c492a8778d"
+  },
+  "package.json": {
+    "mtime": 1791636305.0334344,
+    "seen": 1792821789.918075,
+    "ast_hash": "cde8f60a02907c0dc9421d8a6da8bb94",
+    "semantic_hash": "cde8f60a02907c0dc9421d8a6da8bb94"
+  },
+  ".github/copilot-instructions.md": {
+    "mtime": 1792821047.4800463,
+    "seen": 1792821789.9180772,
+    "ast_hash": "2f500ad1da00673e8290767ca122e126",
+    "semantic_hash": "2f500ad1da00673e8290767ca122e126"
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1791561176.0,
+    "seen": 1792821789.918079,
+    "ast_hash": "ae81ce1aebc428cf09462fb323c1ed51",
+    "semantic_hash": "ae81ce1aebc428cf09462fb323c1ed51"
+  },
+  "README.md": {
+    "mtime": 1791809145.1275804,
+    "seen": 1792821789.918081,
+    "ast_hash": "ce406f728f1d071e8ae653f4c4cb3c5f",
+    "semantic_hash": "ce406f728f1d071e8ae653f4c4cb3c5f"
+  },
+  "database/1.1_khai-niem-ve-lap-trinh.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9180832,
+    "ast_hash": "a26aaa88f95984cdf58d3918f3ec0ca5",
+    "semantic_hash": "a26aaa88f95984cdf58d3918f3ec0ca5"
+  },
+  "database/1.2_giai-thuat.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.918085,
+    "ast_hash": "3de4c3d656a01be3ea47d49e89929ed4",
+    "semantic_hash": "3de4c3d656a01be3ea47d49e89929ed4"
+  },
+  "database/1.3_cac-cong-cu-the-hien-giai-thuat.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9180872,
+    "ast_hash": "acf8a2fb518e9ec900937d2e47641a27",
+    "semantic_hash": "acf8a2fb518e9ec900937d2e47641a27"
+  },
+  "database/1.4_bang-ky-tu-tu-khoa-va-ten-goi.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9180892,
+    "ast_hash": "a9807a0ba70571ef3028723c924887c5",
+    "semantic_hash": "a9807a0ba70571ef3028723c924887c5"
+  },
+  "database/1.5_chu-thich-va-cau-truc-chuong-trinh-cpp.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.918091,
+    "ast_hash": "c9b53807faa84c5eb45600b7c601120f",
+    "semantic_hash": "c9b53807faa84c5eb45600b7c601120f"
+  },
+  "database/1.6_cac-buoc-tao-va-thuc-thi-chuong-trinh.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.918093,
+    "ast_hash": "36264e8376c872ae600d69a698f1d017",
+    "semantic_hash": "36264e8376c872ae600d69a698f1d017"
+  },
+  "database/1.7_nhap-va-xuat-du-lieu-trong-cpp.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.918095,
+    "ast_hash": "01aa0882d5f596d4cb6725ba11a628f6",
+    "semantic_hash": "01aa0882d5f596d4cb6725ba11a628f6"
+  },
+  "database/1.8_cac-kieu-du-lieu-co-ban.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9180968,
+    "ast_hash": "2d898eeaa44149a949a0fb104f716b22",
+    "semantic_hash": "2d898eeaa44149a949a0fb104f716b22"
+  },
+  "database/1.9_hang-so-va-bien.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9180992,
+    "ast_hash": "73cb119d40d598fc41430be2700d4f56",
+    "semantic_hash": "73cb119d40d598fc41430be2700d4f56"
+  },
+  "database/2.1_cau-truc-re-nhanh-if-va-if-else.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181015,
+    "ast_hash": "1d24412b26f9975fd395d90627a420ca",
+    "semantic_hash": "1d24412b26f9975fd395d90627a420ca"
+  },
+  "database/2.2_cau-truc-lua-chon-switch.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181035,
+    "ast_hash": "34bcc8ed57daf1d08ef0c6d0518dde80",
+    "semantic_hash": "34bcc8ed57daf1d08ef0c6d0518dde80"
+  },
+  "database/2.3_lenh-nhay-goto.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181056,
+    "ast_hash": "77e8f1269e869a8b405b0a17012c1c71",
+    "semantic_hash": "77e8f1269e869a8b405b0a17012c1c71"
+  },
+  "database/2.4_cau-truc-lap-for.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181077,
+    "ast_hash": "cbd38ae144750663d779815c3cdabab3",
+    "semantic_hash": "cbd38ae144750663d779815c3cdabab3"
+  },
+  "database/2.5_cau-truc-lap-while.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181097,
+    "ast_hash": "5a712eea14a8df51f5e03794ee68d7e9",
+    "semantic_hash": "5a712eea14a8df51f5e03794ee68d7e9"
+  },
+  "database/2.6_cau-truc-lap-do-while.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181118,
+    "ast_hash": "21ca8e1674aa23b579ca10983485436e",
+    "semantic_hash": "21ca8e1674aa23b579ca10983485436e"
+  },
+  "database/2.7_loi-ra-cua-vong-lap-lenh-break-va-continue.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181137,
+    "ast_hash": "c0daa59f77023e0930e88eafaef298d5",
+    "semantic_hash": "c0daa59f77023e0930e88eafaef298d5"
+  },
+  "database/3.1_dinh-nghia-va-ung-dung-cua-mang.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181156,
+    "ast_hash": "f6dda9c62e488e5d00f0f9caa5a34be6",
+    "semantic_hash": "f6dda9c62e488e5d00f0f9caa5a34be6"
+  },
+  "database/3.2_mang-mot-chieu-dinh-nghia-khai-bao-va-cach-su-dung.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181175,
+    "ast_hash": "d0b388bdc03fafa9b57166e08f608261",
+    "semantic_hash": "d0b388bdc03fafa9b57166e08f608261"
+  },
+  "database/3.3_cac-chuong-trinh-ung-dung-tren-mang-mot-chieu.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181197,
+    "ast_hash": "d53c70bcfc7357245e62c3db32d049b9",
+    "semantic_hash": "d53c70bcfc7357245e62c3db32d049b9"
+  },
+  "database/3.4_mang-hai-chieu-dinh-nghia-khai-bao-va-cach-su-dung.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.918122,
+    "ast_hash": "5a97ae53d7789560bde73a7720731e4b",
+    "semantic_hash": "5a97ae53d7789560bde73a7720731e4b"
+  },
+  "database/3.5_cac-chuong-trinh-ung-dung-tren-mang-hai-chieu.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181237,
+    "ast_hash": "45d87b2b210e8e26dfaf9d785e481beb",
+    "semantic_hash": "45d87b2b210e8e26dfaf9d785e481beb"
+  },
+  "database/4.1_dinh-nghia-va-khai-bao-chuoi-ky-tu.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181259,
+    "ast_hash": "dcd5878302a0f20e44d92df9cc2ce7d7",
+    "semantic_hash": "dcd5878302a0f20e44d92df9cc2ce7d7"
+  },
+  "database/4.2_cach-su-dung-va-phuong-thuc-nhap-chuoi.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181278,
+    "ast_hash": "6bcd75f571d1b656ad67192d9653e651",
+    "semantic_hash": "6bcd75f571d1b656ad67192d9653e651"
+  },
+  "database/4.3_nhom-ham-sao-chep-va-ghep-noi-chuoi.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181302,
+    "ast_hash": "0d63dd7d5eeb6f72b926389987bad6a7",
+    "semantic_hash": "0d63dd7d5eeb6f72b926389987bad6a7"
+  },
+  "database/4.4_nhom-ham-so-sanh-chuyen-doi-va-do-dai-chuoi.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181323,
+    "ast_hash": "2c16b177e61e971c9f9515c1c9eb1f41",
+    "semantic_hash": "2c16b177e61e971c9f9515c1c9eb1f41"
+  },
+  "database/4.5_cac-chuong-trinh-ung-dung-xu-ly-chuoi.md": {
+    "mtime": 1792574462.0,
+    "seen": 1792821789.9181342,
+    "ast_hash": "85d2172ef00d4ad4aae615d92fd7b185",
+    "semantic_hash": "85d2172ef00d4ad4aae615d92fd7b185"
+  },
+  "database/5.10_Vi_du_de_quy_To_hop_va_in_so_le.md": {
+    "mtime": 1792331299.0,
+    "seen": 1792821789.9181366,
+    "ast_hash": "9dc8fd350600c187b13e5c914e4bdf54",
+    "semantic_hash": "9dc8fd350600c187b13e5c914e4bdf54"
+  },
+  "database/5.1_Tong_quan_ve_con_tro.md": {
+    "mtime": 1792330283.0,
+    "seen": 1792821789.9181387,
+    "ast_hash": "13392b6c19326d46bb740a1910d5ced8",
+    "semantic_hash": "13392b6c19326d46bb740a1910d5ced8"
+  },
+  "database/5.2_Cac_phep_toan_tren_con_tro.md": {
+    "mtime": 1792330696.0,
+    "seen": 1792821789.9181404,
+    "ast_hash": "bc43744b4cd7c52dd3cb2368f364a2ff",
+    "semantic_hash": "bc43744b4cd7c52dd3cb2368f364a2ff"
+  },
+  "database/5.3_Cap_phat_dong_va_thu_hoi_vung_nho.md": {
+    "mtime": 1792330770.0,
+    "seen": 1792821789.9181426,
+    "ast_hash": "60fa751bb73f668c576a515a4a08f19c",
+    "semantic_hash": "60fa751bb73f668c576a515a4a08f19c"
+  },
+  "database/5.4_Con_tro_va_chuoi_ky_tu.md": {
+    "mtime": 1792330832.0,
+    "seen": 1792821789.9181447,
+    "ast_hash": "aaa2def34fd8993088a44445d3f730b9",
+    "semantic_hash": "aaa2def34fd8993088a44445d3f730b9"
+  },
+  "database/5.5_Khai_niem_va_cau_truc_ham.md": {
+    "mtime": 1792331039.0,
+    "seen": 1792821789.9181488,
+    "ast_hash": "9bf067fd91b6d273d98643f265b7e447",
+    "semantic_hash": "9bf067fd91b6d273d98643f265b7e447"
+  },
+  "database/5.6_Loi_goi_ham_va_qua_tai_ham.md": {
+    "mtime": 1792331099.0,
+    "seen": 1792821789.918151,
+    "ast_hash": "511a4c838d7250a69be27a01b5c88526",
+    "semantic_hash": "511a4c838d7250a69be27a01b5c88526"
+  },
+  "database/5.7_Cac_cach_truyen_doi_so.md": {
+    "mtime": 1792331142.0,
+    "seen": 1792821789.918153,
+    "ast_hash": "c2f739d1d28cc7638ef74ec89e88cd08",
+    "semantic_hash": "c2f739d1d28cc7638ef74ec89e88cd08"
+  },
+  "database/5.8_Khai_niem_va_cau_truc_de_quy.md": {
+    "mtime": 1792331216.0,
+    "seen": 1792821789.918155,
+    "ast_hash": "ff2b58a5a89a0ecd65bce2df40526d61",
+    "semantic_hash": "ff2b58a5a89a0ecd65bce2df40526d61"
+  },
+  "database/5.9_Vi_du_de_quy_UCLN_va_Fibonacci.md": {
+    "mtime": 1792331259.0,
+    "seen": 1792821789.918157,
+    "ast_hash": "f184c986d3dc6a3a3d244bdec2a60ff4",
+    "semantic_hash": "f184c986d3dc6a3a3d244bdec2a60ff4"
+  },
+  "database/6.1_Khai_niem_va_khai_bao_kieu_cau_truc.md": {
+    "mtime": 1792331583.0,
+    "seen": 1792821789.918159,
+    "ast_hash": "5694b70d228177207729353a3d8bc24d",
+    "semantic_hash": "5694b70d228177207729353a3d8bc24d"
+  },
+  "database/6.2_Khoi_tao_va_truy_xuat_thanh_phan_cau_truc.md": {
+    "mtime": 1792331642.0,
+    "seen": 1792821789.9181612,
+    "ast_hash": "9b8d61e7c29313da24534310c7259665",
+    "semantic_hash": "9b8d61e7c29313da24534310c7259665"
+  },
+  "database/6.3_Cac_thao_tac_co_ban_voi_cau_truc.md": {
+    "mtime": 1792331699.0,
+    "seen": 1792821789.9181633,
+    "ast_hash": "5ac240310a20503c9c481a31b1dab970",
+    "semantic_hash": "5ac240310a20503c9c481a31b1dab970"
+  },
+  "database/6.4_Ung_dung_cau_truc_phan_so.md": {
+    "mtime": 1792331778.0,
+    "seen": 1792821789.9181652,
+    "ast_hash": "d5f7c81d6b0035a866b15479478720c2",
+    "semantic_hash": "d5f7c81d6b0035a866b15479478720c2"
+  },
+  "database/6.5_Ung_dung_quan_ly_sach_thu_vien.md": {
+    "mtime": 1792331872.0,
+    "seen": 1792821789.9181674,
+    "ast_hash": "2a35eda66041e7b698bfd675a6e19ca4",
+    "semantic_hash": "2a35eda66041e7b698bfd675a6e19ca4"
+  },
+  "database/6.6_Ung_dung_quan_ly_sinh_vien.md": {
+    "mtime": 1792331908.0,
+    "seen": 1792821789.918169,
+    "ast_hash": "e3bf840e1d3e8ce4ce8bba008feb8722",
+    "semantic_hash": "e3bf840e1d3e8ce4ce8bba008feb8722"
+  },
+  "database/6.7_Tong_ket_chuong.md": {
+    "mtime": 1792331947.0,
+    "seen": 1792821789.9181714,
+    "ast_hash": "52c6d5816b9bb73a49ff6034ccfb5e8e",
+    "semantic_hash": "52c6d5816b9bb73a49ff6034ccfb5e8e"
+  },
+  "database/7.1_Gioi_thieu_tap_tin.md": {
+    "mtime": 1792334339.0,
+    "seen": 1792821789.9181736,
+    "ast_hash": "0f1b3642b32fb04cbac5274bf43fc7a1",
+    "semantic_hash": "0f1b3642b32fb04cbac5274bf43fc7a1"
+  },
+  "database/7.2_Cac_thao_tac_co_ban.md": {
+    "mtime": 1792334361.0,
+    "seen": 1792821789.9181755,
+    "ast_hash": "c3b6f9a116e9852fc652b5105fa41aff",
+    "semantic_hash": "c3b6f9a116e9852fc652b5105fa41aff"
+  },
+  "database/7.3_Chuong_trinh_quan_ly_nhan_vien.md": {
+    "mtime": 1792334393.0,
+    "seen": 1792821789.9181776,
+    "ast_hash": "f268e55310b4e8271e619142e78d46a6",
+    "semantic_hash": "f268e55310b4e8271e619142e78d46a6"
+  },
+  "database/7.4_Tap_tin_van_ban.md": {
+    "mtime": 1792334413.0,
+    "seen": 1792821789.9181795,
+    "ast_hash": "050a75e0ae89147fb4446cbfdb68ca59",
+    "semantic_hash": "050a75e0ae89147fb4446cbfdb68ca59"
+  },
+  "database/7.5_Tinh_do_dai_tap_tin.md": {
+    "mtime": 1792334432.0,
+    "seen": 1792821789.9181814,
+    "ast_hash": "7253c2cefc6c7ab55a407567bca28dd8",
+    "semantic_hash": "7253c2cefc6c7ab55a407567bca28dd8"
+  },
+  "database/7.6_Sao_chep_tap_tin.md": {
+    "mtime": 1792334447.0,
+    "seen": 1792821789.9181833,
+    "ast_hash": "bbc82bfa9fbebe79eafecbc2e45a2552",
+    "semantic_hash": "bbc82bfa9fbebe79eafecbc2e45a2552"
+  },
+  "database/7.7_Tap_tin_nhi_phan.md": {
+    "mtime": 1792334475.0,
+    "seen": 1792821789.9181857,
+    "ast_hash": "8f42f61e871a29a7efa0abb90f6d6143",
+    "semantic_hash": "8f42f61e871a29a7efa0abb90f6d6143"
+  },
+  "database/Quiz_5.md": {
+    "mtime": 1792333433.0,
+    "seen": 1792821789.9181879,
+    "ast_hash": "ecec194c2f1a2c61c661347051275b13",
+    "semantic_hash": "ecec194c2f1a2c61c661347051275b13"
+  },
+  "database/Quiz_6.md": {
+    "mtime": 1792333490.0,
+    "seen": 1792821789.91819,
+    "ast_hash": "a2464a5a6ca75b6ee97f7e639768d99d",
+    "semantic_hash": "a2464a5a6ca75b6ee97f7e639768d99d"
+  },
+  "database/Quiz_7.md": {
+    "mtime": 1792333522.0,
+    "seen": 1792821789.9181921,
+    "ast_hash": "0cb328366a09100ab5daa5f05fa43c11",
+    "semantic_hash": "0cb328366a09100ab5daa5f05fa43c11"
+  },
+  "database/quiz_1.md": {
+    "mtime": 1792257148.0,
+    "seen": 1792821789.9181945,
+    "ast_hash": "9a9d26ede0d734b5fb2f7685f65b8ced",
+    "semantic_hash": "9a9d26ede0d734b5fb2f7685f65b8ced"
+  },
+  "database/quiz_2.md": {
+    "mtime": 1792257148.0,
+    "seen": 1792821789.9181964,
+    "ast_hash": "5d0dcda1d7ed1409a6f510986a40fd2a",
+    "semantic_hash": "5d0dcda1d7ed1409a6f510986a40fd2a"
+  },
+  "database/quiz_3.md": {
+    "mtime": 1792257150.0,
+    "seen": 1792821789.9181983,
+    "ast_hash": "50a2b205b3d463dc3a8c75516c3705bb",
+    "semantic_hash": "50a2b205b3d463dc3a8c75516c3705bb"
+  },
+  "database/quiz_4.md": {
+    "mtime": 1792257150.0,
+    "seen": 1792821789.9182005,
+    "ast_hash": "9554082329a0625bb8c6cc0e1ba4e079",
+    "semantic_hash": "9554082329a0625bb8c6cc0e1ba4e079"
+  },
+  "docs/README.md": {
+    "mtime": 1791561177.0,
+    "seen": 1792821789.9182026,
+    "ast_hash": "66b75e64c319c0f2942ebc936b2cb818",
+    "semantic_hash": "66b75e64c319c0f2942ebc936b2cb818"
+  },
+  "frontend/index.html": {
+    "mtime": 1791561242.0,
+    "seen": 1792821789.9182048,
+    "ast_hash": "a1550d3440103d054ff91a460c8b7638",
+    "semantic_hash": "a1550d3440103d054ff91a460c8b7638"
+  }
+}
