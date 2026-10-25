@@ -1,6 +1,20 @@
 import { pool } from '../config/db.js'
 import { askLLM } from '../services/llm.service.js'
 
+export function buildAiContext({ chapterTitle, chapterDescription, questionContent, questionExplanation } = {}) {
+  if (questionContent) {
+    const lines = [`Câu quiz: ${questionContent}`]
+    if (questionExplanation) lines.push(`Giải thích: ${questionExplanation}`)
+    return lines.join('\n')
+  }
+
+  if (chapterTitle) {
+    return `Chương đang học: ${chapterTitle}${chapterDescription ? `. ${chapterDescription}` : ''}`
+  }
+
+  return ''
+}
+
 // Hỏi AI. Có thể gắn kèm questionId (đang làm câu nào) hoặc chapterId (đang học chương nào)
 export async function ask(req, res, next) {
   try {
@@ -12,18 +26,26 @@ export async function ask(req, res, next) {
     let context = ''
     if (questionId) {
       const [rows] = await pool.execute(
-        'SELECT content, correct_answer, explanation FROM questions WHERE question_id = ?',
+        'SELECT content, explanation FROM questions WHERE question_id = ?',
         [questionId],
       )
       if (rows[0]) {
-        context = `Câu quiz: ${rows[0].content}\nĐáp án đúng (chỉ để bạn tham khảo, không nói thẳng): ${rows[0].correct_answer}\nGiải thích: ${rows[0].explanation ?? ''}`
+        context = buildAiContext({
+          questionContent: rows[0].content,
+          questionExplanation: rows[0].explanation ?? '',
+        })
       }
     } else if (chapterId) {
       const [rows] = await pool.execute(
         'SELECT title, description FROM chapters WHERE chapter_id = ?',
         [chapterId],
       )
-      if (rows[0]) context = `Chương đang học: ${rows[0].title}. ${rows[0].description ?? ''}`
+      if (rows[0]) {
+        context = buildAiContext({
+          chapterTitle: rows[0].title,
+          chapterDescription: rows[0].description ?? '',
+        })
+      }
     }
 
     const answer = await askLLM({ question: question.trim().slice(0, 1000), context })

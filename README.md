@@ -14,12 +14,11 @@
 # 1. Cài thư viện cho cả 3 phần (gốc, backend, frontend)
 npm run install:all
 
-# 2. Tạo file biến môi trường rồi sửa DB_PASSWORD, JWT_SECRET, LLM_API_KEY
+# 2. Tạo file biến môi trường; điền DB_PASSWORD nếu MySQL có mật khẩu (XAMPP local có thể để trống), JWT_SECRET và LLM_API_KEY
 cp backend/.env.example backend/.env
 
 # 3. Tạo database + bảng + dữ liệu mẫu
-mysql -u root -p < database/schema.sql
-mysql -u root -p < database/seed.sql
+npm run db:setup
 
 # 4. Chạy cả backend và frontend cùng lúc
 npm run dev
