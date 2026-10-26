@@ -7,6 +7,8 @@ const PATHS = {
       <path d="m12 5 7 7-7 7" />
     </>
   ),
+  'chevron-left': <path d="m15 18-6-6 6-6" />,
+  'chevron-right': <path d="m9 18 6-6-6-6" />,
   sprout: (
     <>
       <path d="M7 20h10" />

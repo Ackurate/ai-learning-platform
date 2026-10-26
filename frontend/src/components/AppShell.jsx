@@ -21,6 +21,8 @@ const LEARN_ITEMS = [
   { key: 'quiz', icon: 'square-terminal', label: 'Trắc nghiệm', to: '/chapters' },
 ];
 
+const SIDEBAR_COLLAPSED_KEY = 'byte-cpp-sidebar-collapsed';
+
 function NavItem({ item, active, onClick }) {
   const className = `as-item${active ? ' is-active' : ''}`;
   const content = (
@@ -30,11 +32,11 @@ function NavItem({ item, active, onClick }) {
     </>
   );
   return item.to ? (
-    <Link to={item.to} className={className} aria-current={active ? 'page' : undefined} onClick={onClick}>
+    <Link to={item.to} className={className} title={item.label} aria-current={active ? 'page' : undefined} onClick={onClick}>
       {content}
     </Link>
   ) : (
-    <button type="button" className={className} onClick={onClick}>
+    <button type="button" className={className} title={item.label} onClick={onClick}>
       {content}
     </button>
   );
@@ -63,9 +65,16 @@ export default function AppShell({
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    () => window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true',
+  );
 
   const displayName = user?.username || user?.email || 'Tài khoản';
   const closeNav = () => setNavOpen(false);
+
+  useEffect(() => {
+    window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(sidebarCollapsed));
+  }, [sidebarCollapsed]);
 
   // Esc đóng ngăn kéo menu (mobile)
   useEffect(() => {
@@ -86,13 +95,26 @@ export default function AppShell({
   };
 
   return (
-    <div className={`app-shell${navOpen ? ' is-nav-open' : ''}`}>
+    <div className={`app-shell${navOpen ? ' is-nav-open' : ''}${sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}>
       <a className="as-skip" href="#main-content">
         Bỏ qua điều hướng
       </a>
 
       <aside className="as-sidebar" id="as-sidebar" aria-label="Điều hướng chính">
-        <Brand className="as-sidebar-brand" />
+        <div className="as-sidebar-top">
+          <Brand className="as-sidebar-brand" />
+          <button
+            type="button"
+            className="as-sidebar-toggle"
+            aria-label={sidebarCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}
+            aria-expanded={!sidebarCollapsed}
+            aria-controls="as-sidebar"
+            title={sidebarCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}
+            onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+          >
+            <Icon name={sidebarCollapsed ? 'chevron-right' : 'chevron-left'} size={18} />
+          </button>
+        </div>
 
         <nav className="as-group" aria-label="Học tập">
           <p className="as-group-label">HỌC TẬP</p>

@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { canNavigateToAnotherLesson } from './lesson-navigation.js'
+import {
+  canAccessLesson,
+  canNavigateToAnotherLesson,
+  canTakeChapterQuiz,
+} from './lesson-navigation.js'
 
 test('blocks switching while the self-check is unanswered', () => {
   assert.equal(canNavigateToAnotherLesson({
@@ -67,4 +71,29 @@ test('does not trap a lesson that has fewer than two self-check questions', () =
     answeredCount: 0,
     checked: false,
   }), true)
+})
+
+test('allows the first lesson and blocks later lessons until every earlier lesson is complete', () => {
+  const lessons = [{ lesson_id: 1 }, { lesson_id: 2 }, { lesson_id: 3 }]
+  const progress = { 1: 'completed', 2: 'not_started', 3: 'completed' }
+
+  assert.equal(canAccessLesson(lessons, progress, 0), true)
+  assert.equal(canAccessLesson(lessons, progress, 1), true)
+  assert.equal(canAccessLesson(lessons, progress, 2), false)
+})
+
+test('allows revisiting an out-of-order completed lesson only after its predecessors are complete', () => {
+  const lessons = [{ lesson_id: 1 }, { lesson_id: 2 }, { lesson_id: 3 }]
+  const progress = { 1: 'not_started', 2: 'completed', 3: 'completed' }
+
+  assert.equal(canAccessLesson(lessons, progress, 2), false)
+  assert.equal(canAccessLesson(lessons, { ...progress, 1: 'completed' }, 2), true)
+})
+
+test('keeps the chapter quiz locked until every lesson is completed', () => {
+  const lessons = [{ lesson_id: 1 }, { lesson_id: 2 }, { lesson_id: 3 }]
+
+  assert.equal(canTakeChapterQuiz(lessons, { 1: 'completed', 2: 'completed', 3: 'not_started' }), false)
+  assert.equal(canTakeChapterQuiz(lessons, { 1: 'completed', 2: 'completed', 3: 'completed' }), true)
+  assert.equal(canTakeChapterQuiz([], {}), false)
 })

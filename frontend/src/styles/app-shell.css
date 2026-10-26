@@ -96,6 +96,15 @@ body:has(.app-shell) .navbar {
   padding: 24px 20px;
   background: #fff;
   border-right: 1px solid var(--as-line);
+  transition: width 0.2s ease, flex-basis 0.2s ease, padding 0.2s ease;
+}
+
+.as-sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
 }
 
 .as-brand {
@@ -130,6 +139,28 @@ body:has(.app-shell) .navbar {
 .as-brand-sub {
   font-size: 11px;
   color: var(--as-muted);
+}
+
+.as-sidebar-toggle {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--as-line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--as-muted);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.as-sidebar-toggle:hover {
+  border-color: var(--as-tint-line);
+  background: var(--as-page);
+  color: var(--as-primary);
 }
 
 .as-group {
@@ -177,6 +208,40 @@ body:has(.app-shell) .navbar {
 
 .as-scrim {
   display: none;
+}
+
+/* Desktop collapsed rail */
+@media (min-width: 1120px) {
+  .app-shell.is-sidebar-collapsed .as-sidebar {
+    flex-basis: 88px;
+    width: 88px;
+    padding: 24px 8px;
+  }
+  .app-shell.is-sidebar-collapsed .as-sidebar-top {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .app-shell.is-sidebar-collapsed .as-sidebar-brand {
+    justify-content: center;
+  }
+  .app-shell.is-sidebar-collapsed .as-sidebar-brand .as-brand-id,
+  .app-shell.is-sidebar-collapsed .as-group-label {
+    display: none;
+  }
+  .app-shell.is-sidebar-collapsed .as-group {
+    width: 100%;
+  }
+  .app-shell.is-sidebar-collapsed .as-item {
+    justify-content: center;
+    gap: 0;
+    padding: 10px;
+  }
+  .app-shell.is-sidebar-collapsed .as-item > span {
+    display: none;
+  }
+  .app-shell.is-sidebar-collapsed .as-divider {
+    width: 100%;
+  }
 }
 
 /* --------------------------------- Main --------------------------------- */
@@ -308,6 +373,12 @@ body:has(.app-shell) .navbar {
   .as-sidebar-brand {
     justify-content: center;
   }
+  .as-sidebar-top {
+    justify-content: center;
+  }
+  .as-sidebar-toggle {
+    display: none;
+  }
   .as-sidebar-brand .as-brand-id,
   .as-group-label {
     display: none;
@@ -339,6 +410,7 @@ body:has(.app-shell) .navbar {
     width: 280px;
     max-width: 85vw;
     height: auto;
+    transition: transform 0.2s ease, visibility 0s linear 0.2s;
     box-shadow: 0 16px 48px rgba(25, 34, 57, 0.18);
     transform: translateX(-100%);
     visibility: hidden;
@@ -381,7 +453,8 @@ body:has(.app-shell) .navbar {
 
 @media (prefers-reduced-motion: reduce) {
   .as-sidebar,
-  .as-item {
+  .as-item,
+  .as-sidebar-toggle {
     transition: none !important;
   }
 }

@@ -298,8 +298,8 @@ export default function Dashboard() {
                         ) : (
                           <span className="db-quiz-result">
                             <span className="db-status db-status--not_started">Chưa làm</span>
-                            {chapter.locked ? (
-                              <span className="db-quiz-action is-locked" aria-disabled="true">Chưa mở</span>
+                            {!chapter.quizUnlocked ? (
+                              <span className="db-quiz-action is-locked" aria-disabled="true">Hoàn thành bài học</span>
                             ) : (
                               <Link to={`/quiz/${chapter.chapter_id}`} className="db-quiz-action">Bắt đầu</Link>
                             )}

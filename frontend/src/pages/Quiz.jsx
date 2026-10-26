@@ -207,6 +207,7 @@ export default function Quiz() {
   const [secondsRemaining, setSecondsRemaining] = useState(QUIZ_DURATION)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [prerequisiteBlocked, setPrerequisiteBlocked] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [storageWarning, setStorageWarning] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -228,6 +229,7 @@ export default function Quiz() {
     setSecondsRemaining(QUIZ_DURATION)
     setSubmitted(false)
     setError('')
+    setPrerequisiteBlocked(false)
     setSubmitError('')
     setStorageWarning('')
     setIsSubmitting(false)
@@ -283,6 +285,7 @@ export default function Quiz() {
       .catch((requestError) => {
         if (ignore || requestId !== quizRequestRef.current) return
         setError(requestError.response?.data?.message || 'Không tải được bài trắc nghiệm. Vui lòng thử lại.')
+        setPrerequisiteBlocked(requestError.response?.status === 403)
         setPhase('error')
       })
 
@@ -400,7 +403,12 @@ export default function Quiz() {
         {phase === 'error' && (
           <div className="quiz-notice" role="alert">
             <p>{error}</p>
-            <Link className="quiz-button quiz-button--secondary" to="/chapters">Quay lại danh sách chương</Link>
+            <Link
+              className="quiz-button quiz-button--secondary"
+              to={prerequisiteBlocked ? `/lesson/${normalizedChapterId}` : '/chapters'}
+            >
+              {prerequisiteBlocked ? 'Tiếp tục học bài' : 'Quay lại danh sách chương'}
+            </Link>
           </div>
         )}
 
