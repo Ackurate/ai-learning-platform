@@ -6,6 +6,7 @@ import AppShell from '../components/AppShell.jsx'
 import AskAI from '../components/AskAI.jsx'
 import Icon from '../components/HomeIcons.jsx'
 import { cleanTitle, toList } from '../utils/chapters.js'
+import { canNavigateToAnotherLesson } from '../utils/lesson-navigation.js'
 import '../styles/lesson.css'
 
 function LessonMarkdown({ children }) {
@@ -78,6 +79,7 @@ export default function Lesson() {
   const [quizError, setQuizError] = useState('')
   const [answers, setAnswers] = useState({})
   const [quizResult, setQuizResult] = useState(null)
+  const [checkingAnswers, setCheckingAnswers] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [progressError, setProgressError] = useState('')
   const [chatOpen, setChatOpen] = useState(false)
@@ -90,6 +92,7 @@ export default function Lesson() {
     setQuizError('')
     setProgressError('')
     setQuizResult(null)
+    setCheckingAnswers(false)
     setAnswers({})
     setActiveLessonCode('')
     setLessonProgress({})
@@ -188,21 +191,38 @@ export default function Lesson() {
   const quizProgress = selfCheckQuestions.length ? Math.round((answeredCount / selfCheckQuestions.length) * 100) : 0
   const completedLessons = lessons.filter((lesson) => lessonProgress[lesson.lesson_id] === 'completed').length
   const lessonProgressPercent = lessons.length ? Math.round((completedLessons / lessons.length) * 100) : 0
+  const canSwitchLessons = canNavigateToAnotherLesson({
+    alreadyCompleted: lessonProgress[activeLesson?.lesson_id] === 'completed',
+    questionsReady: quizPhase === 'ready',
+    questionCount: selfCheckQuestions.length,
+    answeredCount,
+    checked: Boolean(quizResult),
+  })
 
   const selectLesson = (lesson) => {
+    if (lesson.lesson_code === activeLessonCode) return
+    if (!canSwitchLessons) {
+      setSubmitError('Trả lời đủ 2 câu và nhấn Kiểm tra trước khi chuyển bài học.')
+      return
+    }
     setActiveLessonCode(lesson.lesson_code)
     setVisited((current) => current.includes(lesson.lesson_code) ? current : [...current, lesson.lesson_code])
+    setQuestions([])
+    setQuizPhase('loading')
     setAnswers({})
     setQuizResult(null)
+    setCheckingAnswers(false)
     setSubmitError('')
   }
 
   const checkAnswers = async () => {
+    if (checkingAnswers) return
     if (selfCheckQuestions.length !== 2 || selfCheckQuestions.some((question) => !answers[question.question_id])) {
       setSubmitError('Hãy chọn đáp án cho cả 2 câu hỏi.')
       return
     }
 
+    setCheckingAnswers(true)
     setSubmitError('')
     try {
       const { data } = await api.post('/quiz/check-lesson', {
@@ -222,6 +242,8 @@ export default function Lesson() {
       }
     } catch (error) {
       setSubmitError(error.response?.data?.message || 'Không thể kiểm tra câu trả lời. Hãy thử lại.')
+    } finally {
+      setCheckingAnswers(false)
     }
   }
 
@@ -282,6 +304,11 @@ export default function Lesson() {
                 </div>
                 <Icon name="chevron-down" size={16} />
               </div>
+              {!canSwitchLessons && (
+                <p className="lesson-navigation-hint">
+                  Trả lời đủ 2 câu và nhấn Kiểm tra để chuyển bài.
+                </p>
+              )}
               <div className="lesson-navigation-list">
                 {lessons.map((lesson, index) => {
                   const active = lesson.lesson_code === activeLessonCode
@@ -293,6 +320,9 @@ export default function Lesson() {
                       type="button"
                       className={`lesson-nav-item${active ? ' is-active' : ''}`}
                       aria-current={active ? 'step' : undefined}
+                      aria-disabled={!active && !canSwitchLessons}
+                      disabled={!active && !canSwitchLessons}
+                      title={!active && !canSwitchLessons ? 'Trả lời đủ 2 câu và kiểm tra trước khi chuyển bài' : undefined}
                       key={lesson.lesson_code}
                       onClick={() => selectLesson(lesson)}
                     >
@@ -401,15 +431,19 @@ export default function Lesson() {
                       </div>
                       {submitError && <p className="lesson-inline-alert" role="alert">{submitError}</p>}
                       <div className="lesson-check-actions">
-                        <p>{quizResult ? `Bạn đã trả lời đúng ${completedCount}/2 câu.` : 'Hoàn thành cả 2 câu để xem kết quả.'}</p>
+                        <p>
+                          {quizResult
+                            ? `Bạn đã trả lời đúng ${completedCount}/2 câu. Có thể chuyển sang bài khác.`
+                            : 'Hoàn thành cả 2 câu và nhấn Kiểm tra để mở khóa bài khác.'}
+                        </p>
                         <button
                           type="button"
                           className="lesson-button lesson-button--primary"
                           onClick={checkAnswers}
-                          disabled={Boolean(quizResult)}
+                          disabled={Boolean(quizResult) || checkingAnswers}
                         >
-                          {quizResult ? 'Đã kiểm tra' : 'Kiểm tra'}
-                          {!quizResult && <Icon name="arrow-right" size={16} />}
+                          {quizResult ? 'Đã kiểm tra' : checkingAnswers ? 'Đang kiểm tra…' : 'Kiểm tra'}
+                          {!quizResult && !checkingAnswers && <Icon name="arrow-right" size={16} />}
                         </button>
                       </div>
                     </>
@@ -420,16 +454,34 @@ export default function Lesson() {
                   <div>
                     <span>BÀI TRƯỚC</span>
                     {activeIndex > 0 ? (
-                      <button type="button" onClick={() => selectLesson(lessons[activeIndex - 1])}>{cleanTitle(lessons[activeIndex - 1].title)}</button>
+                      <button
+                        type="button"
+                        onClick={() => selectLesson(lessons[activeIndex - 1])}
+                        disabled={!canSwitchLessons}
+                        title={!canSwitchLessons ? 'Trả lời đủ 2 câu và kiểm tra trước khi chuyển bài' : undefined}
+                      >
+                        {cleanTitle(lessons[activeIndex - 1].title)}
+                      </button>
                     ) : <span className="lesson-pager-disabled">Đây là bài đầu tiên</span>}
                   </div>
                   <div>
                     <span>BÀI TIẾP THEO</span>
                     {activeIndex < lessons.length - 1 ? (
-                      <button type="button" onClick={() => selectLesson(lessons[activeIndex + 1])}>{cleanTitle(lessons[activeIndex + 1].title)}</button>
+                      <button
+                        type="button"
+                        onClick={() => selectLesson(lessons[activeIndex + 1])}
+                        disabled={!canSwitchLessons}
+                        title={!canSwitchLessons ? 'Trả lời đủ 2 câu và kiểm tra trước khi chuyển bài' : undefined}
+                      >
+                        {cleanTitle(lessons[activeIndex + 1].title)}
+                      </button>
                     ) : <Link className="lesson-pager-link" to={`/quiz/${chapter.chapter_id}`}>Làm bài kiểm tra chương</Link>}
                   </div>
-                  <p>Tiến độ bài học được lưu theo tài khoản của bạn.</p>
+                  <p>
+                    {!canSwitchLessons
+                      ? 'Hãy trả lời đủ 2 câu và nhấn Kiểm tra để mở khóa điều hướng bài học.'
+                      : 'Tiến độ bài học được lưu theo tài khoản của bạn.'}
+                  </p>
                 </nav>
 
                 <div className="lesson-ai" id="lesson-ai" hidden={!chatOpen}>

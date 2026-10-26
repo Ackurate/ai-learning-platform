@@ -19,7 +19,6 @@ const LEARN_ITEMS = [
   { key: 'learn', icon: 'book-open', label: 'Học C++', to: '/chapters' },
   // Tạm: chưa có trang riêng, trỏ về danh sách chương (chọn chương → làm trắc nghiệm / hỏi AI).
   { key: 'quiz', icon: 'square-terminal', label: 'Trắc nghiệm', to: '/chapters' },
-  { key: 'ai', icon: 'sparkles', label: 'AI Tutor', to: '/chapters' },
 ];
 
 function NavItem({ item, active, onClick }) {
