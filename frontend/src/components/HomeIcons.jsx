@@ -21,6 +21,18 @@ const PATHS = {
       <path d="m9 12 2 2 4-4" />
     </>
   ),
+  'shield-check': (
+    <>
+      <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
+  flag: (
+    <>
+      <path d="M4 22V4" />
+      <path d="M4 4c5-3 7 3 12 0v10c-5 3-7-3-12 0" />
+    </>
+  ),
   'file-code-2': (
     <>
       <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4" />

@@ -11,23 +11,16 @@ export async function submitQuiz(req, res, next) {
     }
 
     const [questions] = await pool.execute(
-      'SELECT question_id, correct_answer, explanation FROM questions WHERE chapter_id = ?',
+      'SELECT question_id, correct_answer FROM questions WHERE chapter_id = ?',
       [chapterId],
     )
     if (!questions.length) return res.status(404).json({ message: 'Chương chưa có câu hỏi' })
 
     let totalCorrect = 0
-    const details = questions.map((q) => {
+    questions.forEach((q) => {
       const given = answers[q.question_id] ?? null
       const isCorrect = normalize(given) === normalize(q.correct_answer)
       if (isCorrect) totalCorrect++
-      return {
-        question_id: q.question_id,
-        given,
-        correct_answer: q.correct_answer,
-        is_correct: isCorrect,
-        explanation: q.explanation,
-      }
     })
 
     const totalQuestions = questions.length
@@ -47,7 +40,55 @@ export async function submitQuiz(req, res, next) {
       [req.user.id, chapterId, status],
     )
 
-    res.json({ score, total_correct: totalCorrect, total_questions: totalQuestions, details })
+    res.json({ submitted: true })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function checkLessonQuiz(req, res, next) {
+  try {
+    const { chapterId, lessonId, answers } = req.body
+    const questionIds = Object.keys(answers ?? {}).map(Number)
+    if (
+      !Number.isInteger(Number(chapterId)) ||
+      Number(chapterId) < 1 ||
+      !Number.isInteger(Number(lessonId)) ||
+      Number(lessonId) < 1 ||
+      !answers ||
+      typeof answers !== 'object' ||
+      Array.isArray(answers) ||
+      questionIds.length !== 2 ||
+      questionIds.some((id) => !Number.isInteger(id) || id <= 0) ||
+      Object.values(answers).some((answer) => typeof answer !== 'string')
+    ) {
+      return res.status(400).json({ message: 'Hãy chọn đáp án cho đúng 2 câu hỏi' })
+    }
+
+    const [questions] = await pool.execute(
+      `SELECT lesson_question_id, correct_answer, explanation
+       FROM lesson_questions
+       WHERE chapter_id = ? AND lesson_id = ? AND options IS NOT NULL AND lesson_question_id IN (?, ?)`,
+      [Number(chapterId), Number(lessonId), ...questionIds],
+    )
+    if (questions.length !== questionIds.length) {
+      return res.status(400).json({ message: 'Câu hỏi không thuộc bài học này' })
+    }
+
+    const details = questions.map((question) => ({
+      question_id: question.lesson_question_id,
+      is_correct: normalize(answers[question.lesson_question_id]) === normalize(question.correct_answer),
+      correct_answer: question.correct_answer,
+      explanation: question.explanation,
+    }))
+    const totalCorrect = details.filter((detail) => detail.is_correct).length
+
+    res.json({
+      total_correct: totalCorrect,
+      total_questions: details.length,
+      score: Math.round((totalCorrect / details.length) * 100),
+      details,
+    })
   } catch (err) {
     next(err)
   }

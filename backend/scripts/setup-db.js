@@ -5,6 +5,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import mysql from 'mysql2/promise'
+import { seedLessons } from '../src/utils/seed-lessons.js'
+import { seedQuizzes } from '../src/utils/seed-quizzes.js'
 
 const dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../database')
 const files = ['schema.sql', 'seed.sql']
@@ -26,6 +28,11 @@ try {
     await conn.query(sql)
     console.log(`Đã chạy ${file}`)
   }
+
+  const { lessonCount, questionCount } = await seedLessons(conn, dir)
+  console.log(`Đã nạp ${lessonCount} bài học và ${questionCount} câu hỏi từ các file bài học.`)
+  const { questionCount: quizQuestionCount } = await seedQuizzes(conn, dir)
+  console.log(`Đã nạp ${quizQuestionCount} câu hỏi Quiz từ các file quiz_*.md.`)
   console.log('Tạo database xong.')
 } catch (err) {
   console.error('Lỗi khi tạo database:', err.message)

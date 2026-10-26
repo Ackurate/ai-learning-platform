@@ -32,6 +32,7 @@ export default function AskAI({ chapterId, questionId }) {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Nhập câu hỏi về bài học..."
+          aria-label="Nhập câu hỏi cho AI Tutor"
         />
         <button disabled={loading}>{loading ? 'Đang trả lời...' : 'Gửi'}</button>
       </form>
