@@ -1,8 +1,7 @@
 import { pool } from '../config/db.js'
 import { areAllLessonsCompleted, canAccessLesson, findLessonIndex } from '../utils/lesson-sequence.js'
+import { calculateQuizResult, normalizeQuizAnswer } from '../utils/quiz-result.js'
 import { loadLessonSequence } from '../services/lesson-sequence.service.js'
-
-const normalize = (s) => String(s ?? '').trim().toLowerCase().replace(/\s+/g, ' ')
 
 // Chấm bài ở server (client không bao giờ nhận đáp án trước khi nộp)
 export async function submitQuiz(req, res, next) {
@@ -30,31 +29,23 @@ export async function submitQuiz(req, res, next) {
     )
     if (!questions.length) return res.status(404).json({ message: 'Chương chưa có câu hỏi' })
 
-    let totalCorrect = 0
-    questions.forEach((q) => {
-      const given = answers[q.question_id] ?? null
-      const isCorrect = normalize(given) === normalize(q.correct_answer)
-      if (isCorrect) totalCorrect++
-    })
-
-    const totalQuestions = questions.length
-    const score = Math.round((totalCorrect / totalQuestions) * 10000) / 100
+    const result = calculateQuizResult(questions, answers)
 
     await pool.execute(
       `INSERT INTO quiz_results (user_id, chapter_id, score, total_correct, total_questions)
        VALUES (?, ?, ?, ?, ?)`,
-      [req.user.id, normalizedChapterId, score, totalCorrect, totalQuestions],
+      [req.user.id, normalizedChapterId, result.score, result.total_correct, result.total_questions],
     )
 
-    // Đạt từ 70% thì đánh dấu hoàn thành; không bao giờ hạ chương đã hoàn thành
-    const status = score >= 70 ? 'completed' : 'in_progress'
+    // Chỉ điểm trên 70% mới hoàn thành chương; không bao giờ hạ chương đã hoàn thành
+    const status = result.passed ? 'completed' : 'in_progress'
     await pool.execute(
       `INSERT INTO progress (user_id, chapter_id, status) VALUES (?, ?, ?)
        ON DUPLICATE KEY UPDATE status = IF(status = 'completed', 'completed', VALUES(status))`,
       [req.user.id, normalizedChapterId, status],
     )
 
-    res.json({ submitted: true })
+    res.json({ submitted: true, ...result })
   } catch (err) {
     next(err)
   }
@@ -106,7 +97,7 @@ export async function checkLessonQuiz(req, res, next) {
 
     const details = questions.map((question) => ({
       question_id: question.lesson_question_id,
-      is_correct: normalize(answers[question.lesson_question_id]) === normalize(question.correct_answer),
+      is_correct: normalizeQuizAnswer(answers[question.lesson_question_id]) === normalizeQuizAnswer(question.correct_answer),
       correct_answer: question.correct_answer,
       explanation: question.explanation,
     }))

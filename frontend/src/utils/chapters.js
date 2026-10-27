@@ -1,6 +1,6 @@
 // Logic thuần (không phụ thuộc React) cho trang Danh sách chương.
 
-// true  → chương chưa học sẽ bị "Khóa" cho tới khi hoàn thành chương trước (đúng như Figma).
+// true  → chương chưa hoàn thành bị "Khóa" cho tới khi chương trước đạt quiz.
 // false → mở tất cả chương, không còn nút "Khóa".
 // Lưu ý: đây chỉ là khóa ở giao diện; backend chưa chặn truy cập trực tiếp /lesson/:id.
 export const LOCK_SEQUENTIAL = true;
@@ -30,7 +30,7 @@ export function buildChapterItems(chapters = [], progress = [], isUnlocked = fal
   return sorted.map((chapter, i) => {
     const chapterProgress = progressById.get(Number(chapter.chapter_id));
     const status = chapterProgress?.status ?? 'not_started';
-    const locked = !isUnlocked && LOCK_SEQUENTIAL && status === 'not_started' && !previousDone;
+    const locked = !isUnlocked && LOCK_SEQUENTIAL && status !== 'completed' && !previousDone;
     previousDone = status === 'completed';
     const totalLessons = Number(chapterProgress?.total_lessons ?? 0);
     const completedLessons = Number(chapterProgress?.completed_lessons ?? 0);
@@ -42,7 +42,7 @@ export function buildChapterItems(chapters = [], progress = [], isUnlocked = fal
 /** Chương hiển thị ở khối "Bạn đang học": đang học dở, hoặc chương mở đầu tiên chưa hoàn thành. */
 export function pickCurrent(items) {
   return (
-    items.find((c) => c.status === 'in_progress') ||
+    items.find((c) => c.status === 'in_progress' && !c.locked) ||
     items.find((c) => c.status !== 'completed' && !c.locked) ||
     null
   );

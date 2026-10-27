@@ -198,6 +198,166 @@ function QuizQuestion({ question, index, total, value, onChange, flagged, onTogg
   )
 }
 
+function normalizeQuizResult(candidate) {
+  const score = Number(candidate?.score)
+  const totalCorrect = Number(candidate?.total_correct)
+  const totalIncorrect = Number(candidate?.total_incorrect)
+  const totalUnanswered = Number(candidate?.total_unanswered)
+  const totalQuestions = Number(candidate?.total_questions)
+  const counts = [totalCorrect, totalIncorrect, totalUnanswered, totalQuestions]
+
+  if (
+    !Number.isFinite(score) ||
+    score < 0 ||
+    score > 100 ||
+    counts.some((count) => !Number.isInteger(count) || count < 0) ||
+    totalQuestions < 1 ||
+    totalCorrect + totalIncorrect + totalUnanswered !== totalQuestions
+  ) {
+    return null
+  }
+
+  return {
+    score,
+    total_correct: totalCorrect,
+    total_incorrect: totalIncorrect,
+    total_unanswered: totalUnanswered,
+    total_questions: totalQuestions,
+    passed: typeof candidate.passed === 'boolean' ? candidate.passed : score > 70,
+  }
+}
+
+function ResultStat({ label, count, total, tone }) {
+  const percent = total ? Math.round((count / total) * 100) : 0
+
+  return (
+    <article className={`quiz-result-stat quiz-result-stat--${tone}`}>
+      <span>{label}</span>
+      <strong>{count}</strong>
+      <small>{percent}% số câu</small>
+    </article>
+  )
+}
+
+function QuizResult({ chapter, result, nextChapter, nextChapterError, nextChapterStatus, onRetry }) {
+  const passed = result.passed
+  const scoreLabel = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 }).format(result.score)
+  const minimumCorrect = Math.floor(result.total_questions * 0.7) + 1
+  const chapterNumber = Number(chapter?.order_index) || 1
+
+  return (
+    <div className={`quiz-results${passed ? ' is-passed' : ' is-failed'}`}>
+      <section className="quiz-result-hero" aria-labelledby="quiz-result-title">
+        <div className={`quiz-result-score${passed ? ' is-passed' : ' is-failed'}`} role="img" aria-label={`Điểm bài quiz ${scoreLabel}%`}>
+          <div className="quiz-result-score__dots" aria-hidden="true">
+            {Array.from({ length: 20 }, (_, index) => (
+              <span
+                key={index}
+                className={`quiz-result-score__dot${index < Math.round(result.score / 5) ? ' is-filled' : ''}`}
+                style={{ '--dot-angle': `${index * 18}deg` }}
+              />
+            ))}
+          </div>
+          <strong>{scoreLabel}%</strong>
+          <span>{result.total_correct} / {result.total_questions} điểm</span>
+          <small>ĐIỂM BÀI QUIZ</small>
+        </div>
+
+        <div className="quiz-result-copy">
+          <span className={`quiz-result-badge${passed ? ' is-passed' : ' is-failed'}`}>
+            <Icon name={passed ? 'circle-check' : 'circle'} size={13} />
+            {!passed && <span aria-hidden="true">!</span>}
+            {passed ? 'Đạt yêu cầu' : 'Chưa đạt yêu cầu'}
+          </span>
+          <h2 id="quiz-result-title">{passed ? 'Chúc mừng, bạn đã đạt!' : 'Chưa đạt, thử lại nhé!'}</h2>
+          <p>
+            {passed
+              ? `Bạn đã trả lời đúng ${result.total_correct}/${result.total_questions} câu. Tiếp tục khám phá chương mới hoặc làm lại để củng cố kiến thức.`
+              : `Bạn đã trả lời đúng ${result.total_correct}/${result.total_questions} câu. Ôn lại kiến thức chương rồi thử lại — bạn sẽ làm tốt hơn!`}
+          </p>
+          <div className="quiz-result-threshold">
+            <strong>Điều kiện đạt: điểm phải lớn hơn 70%.</strong>
+            <span>
+              Đúng ít nhất {minimumCorrect}/{result.total_questions} câu. Đúng {result.total_correct}/{result.total_questions} ({scoreLabel}%){' '}
+              {passed ? '— chương đã được ghi nhận hoàn thành.' : 'vẫn chưa đạt.'}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section className="quiz-result-summary" aria-labelledby="quiz-result-summary-title">
+        <div className="quiz-result-summary__heading">
+          <h2 id="quiz-result-summary-title">Tóm tắt bài làm</h2>
+          <span>Đã trả lời {result.total_questions - result.total_unanswered}/{result.total_questions} câu</span>
+        </div>
+        <div className="quiz-result-stats">
+          <ResultStat label="Đúng" count={result.total_correct} total={result.total_questions} tone="correct" />
+          <ResultStat label="Sai" count={result.total_incorrect} total={result.total_questions} tone="incorrect" />
+          <ResultStat label="Bỏ trống" count={result.total_unanswered} total={result.total_questions} tone="unanswered" />
+        </div>
+      </section>
+
+      {passed ? (
+        <section className="quiz-result-next" aria-label="Chương tiếp theo">
+          <p className="quiz-result-section-label">SẴN SÀNG CHO CHƯƠNG MỚI</p>
+          {nextChapterStatus === 'idle' || nextChapterStatus === 'loading' ? (
+            <p className="quiz-result-next__message" role="status">Đang tải thông tin chương tiếp theo...</p>
+          ) : nextChapter ? (
+            <div className="quiz-result-chapter">
+              <span>{String(nextChapter.order_index || chapterNumber + 1).padStart(2, '0')}</span>
+              <strong>
+                Chương {nextChapter.order_index || chapterNumber + 1}: {cleanTitle(nextChapter.title)}
+              </strong>
+            </div>
+          ) : nextChapterStatus === 'error' ? (
+            <p className="quiz-result-next__message" role="alert">
+              {nextChapterError || 'Không tải được thông tin chương tiếp theo. Bạn vẫn có thể mở danh sách chương.'}
+            </p>
+          ) : (
+            <p className="quiz-result-next__message">Bạn đã hoàn thành tất cả chương trong lộ trình.</p>
+          )}
+          {nextChapter?.description && <p className="quiz-result-next__description">{nextChapter.description}</p>}
+          <div className="quiz-result-actions">
+            <Link to="/chapters" className="quiz-button quiz-button--primary">
+              {nextChapter ? 'Chương tiếp theo' : 'Về danh sách chương'}
+              <Icon name="arrow-right" size={16} />
+            </Link>
+            <button type="button" className="quiz-button quiz-button--secondary" onClick={onRetry}>
+              Làm lại bài quiz
+            </button>
+          </div>
+          <p className="quiz-result-footnote">Làm lại là tùy chọn nếu bạn muốn luyện tập thêm.</p>
+        </section>
+      ) : (
+        <section className="quiz-result-next quiz-result-review" aria-label="Ôn tập trước khi thử lại">
+          <p className="quiz-result-section-label">CỦNG CỐ TRƯỚC KHI THỬ LẠI</p>
+          <div className="quiz-result-chapter is-review">
+            <span>{String(chapterNumber).padStart(2, '0')}</span>
+            <div>
+              <strong>{cleanTitle(chapter?.title) || `Chương ${chapterNumber}`}</strong>
+              <small>Ôn lại kiến thức chương</small>
+            </div>
+          </div>
+          <p className="quiz-result-next__description">
+            Xem lại bài học và những nội dung cần củng cố trước khi làm lại bài quiz.
+          </p>
+          <div className="quiz-result-actions">
+            <button type="button" className="quiz-button quiz-button--primary" onClick={onRetry}>
+              Làm lại bài quiz
+            </button>
+            <Link to={`/lesson/${chapter?.chapter_id}`} className="quiz-button quiz-button--secondary">
+              Xem lại bài học
+            </Link>
+          </div>
+          <p className="quiz-result-footnote">
+            Bạn cần đúng ít nhất {minimumCorrect} câu để đạt trong lần làm tiếp theo.
+          </p>
+        </section>
+      )}
+    </div>
+  )
+}
+
 export default function Quiz() {
   const { chapterId } = useParams()
   const { user, isAdmin, previewUnlocked, togglePreviewUnlocked } = useAuth()
@@ -212,6 +372,13 @@ export default function Quiz() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [secondsRemaining, setSecondsRemaining] = useState(QUIZ_DURATION)
   const [submitted, setSubmitted] = useState(false)
+  const [result, setResult] = useState(null)
+  const [resultLoading, setResultLoading] = useState(false)
+  const [resultError, setResultError] = useState('')
+  const [resultLookupAttempt, setResultLookupAttempt] = useState(0)
+  const [nextChapter, setNextChapter] = useState(null)
+  const [nextChapterStatus, setNextChapterStatus] = useState('idle')
+  const [nextChapterError, setNextChapterError] = useState('')
   const [error, setError] = useState('')
   const [prerequisiteBlocked, setPrerequisiteBlocked] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -234,6 +401,13 @@ export default function Quiz() {
     setActiveIndex(0)
     setSecondsRemaining(QUIZ_DURATION)
     setSubmitted(false)
+    setResult(null)
+    setResultLoading(false)
+    setResultError('')
+    setResultLookupAttempt(0)
+    setNextChapter(null)
+    setNextChapterStatus('idle')
+    setNextChapterError('')
     setError('')
     setPrerequisiteBlocked(false)
     setSubmitError('')
@@ -272,7 +446,8 @@ export default function Quiz() {
         const savedFlags = Array.isArray(draft?.flagged)
           ? draft.flagged.filter((id) => questionIds.has(String(id))).map(Number)
           : []
-        const savedSubmitted = Boolean(draft?.submitted || draft?.result)
+        const savedResult = normalizeQuizResult(draft?.result)
+        const savedSubmitted = Boolean(draft?.submitted || savedResult)
 
         setChapter(chapterResponse.data)
         setQuestions(loadedQuestions)
@@ -283,6 +458,7 @@ export default function Quiz() {
           ? Math.min(Math.max(draft.secondsRemaining, 0), QUIZ_DURATION)
           : QUIZ_DURATION)
         setSubmitted(savedSubmitted)
+        setResult(savedResult)
         setStorageWarning(warning)
         setPhase('ready')
         setDraftReady(true)
@@ -318,11 +494,15 @@ export default function Quiz() {
     setIsSubmitting(true)
     setSubmitError('')
     try {
-      await api.post('/quiz/submit', {
+      const response = await api.post('/quiz/submit', {
         chapterId: normalizedChapterId,
         answers,
       })
-      if (requestId === quizRequestRef.current) setSubmitted(true)
+      if (requestId === quizRequestRef.current) {
+        setResult(normalizeQuizResult(response.data))
+        setResultError('')
+        setSubmitted(true)
+      }
     } catch (submitRequestError) {
       if (requestId === quizRequestRef.current) {
         setSubmitError(submitRequestError.response?.data?.message || 'Nộp bài thất bại. Vui lòng thử lại.')
@@ -334,6 +514,86 @@ export default function Quiz() {
       }
     }
   }, [answers, normalizedChapterId, questions.length, submitted])
+
+  useEffect(() => {
+    if (phase !== 'ready' || !submitted || result) return undefined
+    let ignore = false
+    setResultLoading(true)
+    setResultError('')
+
+    api.get('/quiz/history')
+      .then(({ data }) => {
+        if (ignore) return
+        const previousResult = Array.isArray(data)
+          ? data.find((item) => Number(item.chapter_id) === normalizedChapterId)
+          : null
+        if (!previousResult) {
+          setResultError('Không tìm thấy kết quả đã nộp. Hãy thử tải lại kết quả.')
+          return
+        }
+
+        const totalQuestions = Number(previousResult.total_questions)
+        const totalCorrect = Number(previousResult.total_correct)
+        const totalUnanswered = Math.max(totalQuestions - Math.min(answeredCount, totalQuestions), 0)
+        const restoredResult = normalizeQuizResult({
+          ...previousResult,
+          total_incorrect: Math.max(totalQuestions - totalCorrect - totalUnanswered, 0),
+          total_unanswered: totalUnanswered,
+          passed: totalQuestions > 0 && (totalCorrect / totalQuestions) * 100 > 70,
+        })
+        if (restoredResult) {
+          setResult(restoredResult)
+        } else {
+          setResultError('Kết quả bài làm có dữ liệu không hợp lệ.')
+        }
+      })
+      .catch((requestError) => {
+        if (!ignore) {
+          setResultError(requestError.response?.data?.message || 'Không tải được kết quả bài làm.')
+        }
+      })
+      .finally(() => {
+        if (!ignore) setResultLoading(false)
+      })
+
+    return () => {
+      ignore = true
+    }
+  }, [answeredCount, normalizedChapterId, phase, result, resultLookupAttempt, submitted])
+
+  useEffect(() => {
+    if (phase !== 'ready' || !submitted || !result?.passed || !chapter) return undefined
+    let ignore = false
+    setNextChapterStatus('loading')
+    setNextChapter(null)
+    setNextChapterError('')
+
+    api.get('/chapters')
+      .then(({ data }) => {
+        if (ignore) return
+        if (!Array.isArray(data)) {
+          setNextChapterError('Dữ liệu chương tiếp theo không hợp lệ.')
+          setNextChapterStatus('error')
+          return
+        }
+        const currentOrder = Number(chapter.order_index) || normalizedChapterId
+        const next = [...data]
+          .filter((item) => Number(item.order_index) > currentOrder)
+          .sort((left, right) => Number(left.order_index) - Number(right.order_index))[0] ?? null
+        setNextChapter(next)
+        setNextChapterStatus('ready')
+      })
+      .catch((requestError) => {
+        if (!ignore) {
+          setNextChapterError(requestError.response?.data?.message || 'Không tải được thông tin chương tiếp theo. Bạn vẫn có thể mở danh sách chương.')
+          setNextChapterStatus('error')
+        }
+      })
+
+    return () => {
+      ignore = true
+    }
+  }, [chapter, normalizedChapterId, phase, result, submitted])
 
   useEffect(() => {
     if (phase !== 'ready' || submitted || secondsRemaining <= 0) return undefined
@@ -359,11 +619,36 @@ export default function Quiz() {
         activeIndex,
         secondsRemaining,
         submitted,
+        result,
       }))
     } catch {
       setStorageWarning('Không thể lưu tự động bài làm trên thiết bị này.')
     }
-  }, [activeIndex, answers, draftKey, draftReady, flagged, phase, secondsRemaining, submitted])
+  }, [activeIndex, answers, draftKey, draftReady, flagged, phase, result, secondsRemaining, submitted])
+
+  const retryQuiz = () => {
+    try {
+      window.localStorage.removeItem(draftKey)
+      setStorageWarning('')
+    } catch {
+      setStorageWarning('Không thể xóa bản làm bài cũ trên thiết bị này.')
+    }
+    setAnswers({})
+    setFlagged([])
+    setActiveIndex(0)
+    setSecondsRemaining(QUIZ_DURATION)
+    setSubmitted(false)
+    setResult(null)
+    setResultError('')
+    setResultLookupAttempt(0)
+    setNextChapter(null)
+    setNextChapterStatus('idle')
+    setNextChapterError('')
+    setSubmitError('')
+    setDraftReady(true)
+    isSubmittingRef.current = false
+    autoSubmitRef.current = false
+  }
 
   const updateAnswer = (value) => {
     if (!activeQuestion || submitted) return
@@ -392,10 +677,20 @@ export default function Quiz() {
           </Link>
           {chapter && (
             <>
-              <p className="quiz-eyebrow">CHƯƠNG {String(chapter.order_index || normalizedChapterId).padStart(2, '0')} / TRẮC NGHIỆM</p>
+              <p className="quiz-eyebrow">
+                CHƯƠNG {String(chapter.order_index || normalizedChapterId).padStart(2, '0')} / {submitted ? 'KẾT QUẢ TRẮC NGHIỆM' : 'TRẮC NGHIỆM'}
+              </p>
               <h1>{cleanTitle(chapter.title)}</h1>
-              <p className="quiz-description">{chapter.description || 'Kiểm tra kiến thức C++ của bạn.'}</p>
-              <p className="quiz-meta">{questions.length} câu hỏi <span>·</span> 20 phút <span>·</span> {difficulty}</p>
+              <p className="quiz-description">
+                {submitted
+                  ? `Bạn đã hoàn thành bài quiz về ${cleanTitle(chapter.title)}.`
+                  : chapter.description || 'Kiểm tra kiến thức C++ của bạn.'}
+              </p>
+              <p className="quiz-meta">
+                {questions.length} câu hỏi
+                {submitted && <><span> · </span>{questions.length} điểm</>}
+                {' '}<span>·</span> 20 phút <span>·</span> {difficulty}
+              </p>
             </>
           )}
         </div>
@@ -436,7 +731,29 @@ export default function Quiz() {
           </div>
         )}
 
-        {phase === 'ready' && questions.length > 0 && (
+        {phase === 'ready' && questions.length > 0 && submitted && result && (
+          <QuizResult
+            chapter={chapter}
+            result={result}
+            nextChapter={nextChapter}
+            nextChapterError={nextChapterError}
+            nextChapterStatus={nextChapterStatus}
+            onRetry={retryQuiz}
+          />
+        )}
+
+        {phase === 'ready' && questions.length > 0 && submitted && !result && (
+          <div className={`quiz-notice${resultError ? ' is-error' : ''}`} role={resultError ? 'alert' : 'status'}>
+            <p>{resultError || (resultLoading ? 'Đang tải kết quả bài làm...' : 'Kết quả đã được nộp, đang tải dữ liệu...')}</p>
+            {resultError && (
+              <button type="button" className="quiz-button quiz-button--secondary" onClick={() => setResultLookupAttempt((attempt) => attempt + 1)}>
+                Thử tải lại
+              </button>
+            )}
+          </div>
+        )}
+
+        {phase === 'ready' && questions.length > 0 && !submitted && (
           <>
             <div className="quiz-status-bar">
               <div className="quiz-progress">
@@ -455,16 +772,6 @@ export default function Quiz() {
 
             <div className="quiz-layout">
               <div className="quiz-main">
-                {submitted && (
-                  <section className="quiz-submitted" aria-live="polite">
-                    <span className="quiz-submitted__icon"><Icon name="circle-check" size={22} /></span>
-                    <div>
-                      <p>Đã nộp bài thành công</p>
-                      <h2>Tổng điểm sẽ hiển thị tại trang kết quả.</h2>
-                    </div>
-                  </section>
-                )}
-
                 {activeQuestion && (
                   <QuizQuestion
                     key={activeQuestion.question_id}
@@ -547,7 +854,6 @@ export default function Quiz() {
                       </button>
                     </>
                   )}
-                  {submitted && <p className="quiz-submitted-note">Bài làm đã hoàn tất.</p>}
                 </section>
 
                 <div className="quiz-aside-tip">

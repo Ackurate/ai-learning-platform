@@ -4,12 +4,20 @@ import { loadLessonSequence } from '../services/lesson-sequence.service.js'
 
 const STATUSES = ['not_started', 'in_progress', 'completed']
 
-// Tiến độ của tôi: mọi chương, chương chưa học có status = not_started
+// Chapter status is complete only after a passing final quiz (except admin previews).
 export async function getMyProgress(req, res, next) {
   try {
     const [rows] = await pool.execute(
       `SELECT c.chapter_id, c.title, c.order_index,
-              COALESCE(p.status, 'not_started') AS status, p.last_accessed,
+              COALESCE(p.status, 'not_started') AS stored_status, p.last_accessed,
+              EXISTS (
+                SELECT 1
+                FROM quiz_results qr
+                WHERE qr.user_id = ?
+                  AND qr.chapter_id = c.chapter_id
+                  AND qr.total_questions > 0
+                  AND qr.total_correct * 100 > qr.total_questions * 70
+              ) AS quiz_passed,
               COALESCE(ls.total_lessons, 0) AS total_lessons,
               COALESCE(ls.completed_lessons, 0) AS completed_lessons
        FROM chapters c
@@ -22,9 +30,19 @@ export async function getMyProgress(req, res, next) {
          GROUP BY l.chapter_id
        ) ls ON ls.chapter_id = c.chapter_id
        ORDER BY c.order_index`,
-      [req.user.id, req.user.id],
+      [req.user.id, req.user.id, req.user.id],
     )
-    res.json(rows)
+    res.json(rows.map(({ stored_status, quiz_passed, ...chapter }) => {
+      const status = req.user.role === 'admin'
+        ? stored_status
+        : Number(quiz_passed) === 1
+          ? 'completed'
+          : stored_status === 'completed'
+            ? 'in_progress'
+            : stored_status
+
+      return { ...chapter, status }
+    }))
   } catch (err) {
     next(err)
   }

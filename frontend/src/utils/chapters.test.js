@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildChapterItems } from './chapters.js'
+import { buildChapterItems, pickCurrent } from './chapters.js'
 
 test('chapter quiz remains locked unless progress reports every lesson completed', () => {
   const chapters = [{ chapter_id: 1, order_index: 1 }, { chapter_id: 2, order_index: 2 }]
@@ -24,6 +24,20 @@ test('chapter quiz stays locked when the chapter contains no lessons', () => {
   assert.equal(chapter.quizUnlocked, false)
 })
 
+test('next chapter unlocks only after the previous chapter is marked complete', () => {
+  const chapters = [{ chapter_id: 1, order_index: 1 }, { chapter_id: 2, order_index: 2 }]
+  const progress = [
+    { chapter_id: 1, status: 'in_progress', total_lessons: 2, completed_lessons: 2 },
+    { chapter_id: 2, status: 'in_progress', total_lessons: 2, completed_lessons: 1 },
+  ]
+
+  const lockedItems = buildChapterItems(chapters, progress)
+  assert.equal(lockedItems[1].locked, true)
+  assert.equal(lockedItems[1].status, 'in_progress')
+  assert.equal(pickCurrent(lockedItems).chapter_id, 1)
+  progress[0].status = 'completed'
+  assert.equal(buildChapterItems(chapters, progress)[1].locked, false)
+})
 
 test('buildChapterItems unlocks all chapters and quizzes when isUnlocked is true', () => {
   const chapters = [{ chapter_id: 1, order_index: 1 }, { chapter_id: 2, order_index: 2 }]
