@@ -23,3 +23,19 @@ test('chapter quiz stays locked when the chapter contains no lessons', () => {
 
   assert.equal(chapter.quizUnlocked, false)
 })
+
+
+test('buildChapterItems unlocks all chapters and quizzes when isUnlocked is true', () => {
+  const chapters = [{ chapter_id: 1, order_index: 1 }, { chapter_id: 2, order_index: 2 }]
+  const progress = [
+    { chapter_id: 1, status: 'not_started', total_lessons: 3, completed_lessons: 0 },
+    { chapter_id: 2, status: 'not_started', total_lessons: 2, completed_lessons: 0 },
+  ]
+
+  const items = buildChapterItems(chapters, progress, true)
+
+  assert.equal(items[0].locked, false)
+  assert.equal(items[0].quizUnlocked, true)
+  assert.equal(items[1].locked, false)
+  assert.equal(items[1].quizUnlocked, true)
+})

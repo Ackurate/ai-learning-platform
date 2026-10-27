@@ -53,7 +53,7 @@ pass_threshold: 70
 
 ### 1.q05 | easy | multiple_choice
 
-**Câu hỏi:** Kiểu dữ liệu `double` trong C++ có kích thước bao nhiêu byte trên hệ thống PC thông dụng theo giáo trình?
+**Câu hỏi:** Kiểu dữ liệu `double` trong C++ tiêu chuẩn có kích thước bao nhiêu byte trên hệ thống PC thông dụng?
 
 - A. 2 bytes
 - B. 4 bytes

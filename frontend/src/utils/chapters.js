@@ -22,7 +22,7 @@ export function toList(res, key) {
  * Ghép danh sách chương với tiến độ của người dùng.
  * Trả về chương cùng trạng thái mở khóa và tiến độ bài học theo thứ tự order_index.
  */
-export function buildChapterItems(chapters = [], progress = []) {
+export function buildChapterItems(chapters = [], progress = [], isUnlocked = false) {
   const progressById = new Map(progress.map((p) => [Number(p.chapter_id), p]));
   const sorted = [...chapters].sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0));
 
@@ -30,11 +30,11 @@ export function buildChapterItems(chapters = [], progress = []) {
   return sorted.map((chapter, i) => {
     const chapterProgress = progressById.get(Number(chapter.chapter_id));
     const status = chapterProgress?.status ?? 'not_started';
-    const locked = LOCK_SEQUENTIAL && status === 'not_started' && !previousDone;
+    const locked = !isUnlocked && LOCK_SEQUENTIAL && status === 'not_started' && !previousDone;
     previousDone = status === 'completed';
     const totalLessons = Number(chapterProgress?.total_lessons ?? 0);
     const completedLessons = Number(chapterProgress?.completed_lessons ?? 0);
-    const quizUnlocked = totalLessons > 0 && completedLessons === totalLessons;
+    const quizUnlocked = isUnlocked || (totalLessons > 0 && completedLessons === totalLessons);
     return { ...chapter, number: i + 1, status, locked, quizUnlocked };
   });
 }

@@ -328,7 +328,7 @@ cout << s;
 
 ### 4.q23 | hard | code
 
-**Câu hỏi:** Trong chương trình thống kê chữ số xuất hiện nhiều nhất trong chuỗi `st` (mục 4.6.3 giáo trình), khi `isdigit(st[i])` đúng, biểu thức `(int)st[i] - 48` dùng để làm gì?
+**Câu hỏi:** Trong chương trình thống kê chữ số xuất hiện nhiều nhất trong chuỗi `st`, khi `isdigit(st[i])` đúng, biểu thức `(int)st[i] - 48` dùng để làm gì?
 
 ```cpp
 if (isdigit(st[i]))

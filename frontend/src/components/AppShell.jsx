@@ -62,7 +62,7 @@ export default function AppShell({
   title = 'Học C++',
   subtitle = 'Kiến thức lý thuyết C++',
 }) {
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout, previewUnlocked, togglePreviewUnlocked } = useAuth();
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
@@ -145,12 +145,28 @@ export default function AppShell({
           {/* Tablet + mobile: thương hiệu */}
           <Brand className="as-head-brand" />
 
-          <div className="as-account">
-            <span className="as-avatar" aria-hidden="true">
-              {initials(displayName)}
-            </span>
-            <span className="as-account-name">{displayName}</span>
-            <Icon name="chevron-down" size={16} />
+          <div className="as-header-right">
+            {isAdmin && (
+              <button
+                type="button"
+                className={`as-preview-btn${previewUnlocked ? ' is-active' : ''}`}
+                onClick={() => togglePreviewUnlocked()}
+                title={
+                  previewUnlocked
+                    ? 'Đang mở khóa tất cả bài tập & quiz. Bấm để tắt. (Tự động xóa quyền khi đóng trình duyệt)'
+                    : 'Bấm để mở khóa xem tất cả bài tập & quiz cho phiên làm việc này. (Tự động xóa quyền khi đóng trình duyệt)'
+                }
+              >
+                <span>{previewUnlocked ? '🔓 Đang mở toàn bộ (Admin)' : '👁️ Mở khóa xem tất cả (Admin)'}</span>
+              </button>
+            )}
+
+            <div className="as-account">
+              <span className="as-avatar" aria-hidden="true">
+                {initials(displayName)}
+              </span>
+              <span className="as-account-name">{displayName}</span>
+            </div>
           </div>
 
           <button

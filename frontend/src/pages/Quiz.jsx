@@ -1,6 +1,10 @@
 import { Children, isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 import api from '../api/client.js'
 import AppShell from '../components/AppShell.jsx'
 import AskAI from '../components/AskAI.jsx'
@@ -21,6 +25,8 @@ function getCodeText(node) {
 function Markdown({ children, code = false, inline = false }) {
   return (
     <ReactMarkdown
+      remarkPlugins={[remarkGfm, remarkMath]}
+      rehypePlugins={[rehypeKatex]}
       components={{
         p: ({ children: paragraph }) => inline ? <span>{paragraph}</span> : <p>{paragraph}</p>,
         pre: ({ children: codeChildren }) => {
@@ -194,7 +200,7 @@ function QuizQuestion({ question, index, total, value, onChange, flagged, onTogg
 
 export default function Quiz() {
   const { chapterId } = useParams()
-  const { user } = useAuth()
+  const { user, isAdmin, previewUnlocked, togglePreviewUnlocked } = useAuth()
   const normalizedChapterId = Number(chapterId)
   const userKey = user?.user_id ?? user?.id ?? user?.email ?? user?.username ?? 'user'
   const draftKey = `byte-cpp-quiz:${userKey}:${normalizedChapterId}`
@@ -292,7 +298,7 @@ export default function Quiz() {
     return () => {
       ignore = true
     }
-  }, [normalizedChapterId, draftKey])
+  }, [normalizedChapterId, draftKey, previewUnlocked])
 
   const answeredCount = useMemo(
     () => questions.filter((question) => Boolean(answers[question.question_id]?.trim())).length,
@@ -403,12 +409,23 @@ export default function Quiz() {
         {phase === 'error' && (
           <div className="quiz-notice" role="alert">
             <p>{error}</p>
-            <Link
-              className="quiz-button quiz-button--secondary"
-              to={prerequisiteBlocked ? `/lesson/${normalizedChapterId}` : '/chapters'}
-            >
-              {prerequisiteBlocked ? 'Tiếp tục học bài' : 'Quay lại danh sách chương'}
-            </Link>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link
+                className="quiz-button quiz-button--secondary"
+                to={prerequisiteBlocked ? `/lesson/${normalizedChapterId}` : '/chapters'}
+              >
+                {prerequisiteBlocked ? 'Tiếp tục học bài' : 'Quay lại danh sách chương'}
+              </Link>
+              {prerequisiteBlocked && isAdmin && !previewUnlocked && (
+                <button
+                  type="button"
+                  className="quiz-button quiz-button--primary"
+                  onClick={() => togglePreviewUnlocked(true)}
+                >
+                  Mở khóa xem quiz ngay (Quyền Admin)
+                </button>
+              )}
+            </div>
           </div>
         )}
 

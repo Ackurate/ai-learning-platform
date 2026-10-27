@@ -36,7 +36,8 @@ export async function updateProgress(req, res, next) {
     if (!STATUSES.includes(status)) {
       return res.status(400).json({ message: 'Trạng thái không hợp lệ' })
     }
-    if (status === 'completed') {
+    const isPreview = Boolean(req.user?.role === 'admin')
+    if (status === 'completed' && !isPreview) {
       const chapterId = Number(req.params.chapterId)
       if (!Number.isInteger(chapterId) || chapterId < 1) {
         return res.status(400).json({ message: 'Mã chương không hợp lệ' })
@@ -90,18 +91,19 @@ export async function updateLessonProgress(req, res, next) {
       return res.status(400).json({ message: 'Trạng thái bài học không hợp lệ' })
     }
 
+    const isPreview = Boolean(req.user?.role === 'admin')
     const lessons = await loadLessonSequence(req.user.id, chapterId)
     const lessonIndex = findLessonIndex(lessons, lessonId)
     if (lessonIndex < 0) {
       return res.status(404).json({ message: 'Không tìm thấy bài học trong chương này' })
     }
-    if (!canAccessLesson(lessons, lessonId)) {
+    if (!isPreview && !canAccessLesson(lessons, lessonId)) {
       const prerequisite = lessons.slice(0, lessonIndex).find((lesson) => lesson.status !== 'completed')
       return res.status(409).json({
         message: `Hãy hoàn thành bài ${prerequisite.lesson_code} trước khi chuyển tới bài này`,
       })
     }
-    if (status === 'completed' && lessons[lessonIndex].status !== 'completed') {
+    if (!isPreview && status === 'completed' && lessons[lessonIndex].status !== 'completed') {
       return res.status(409).json({
         message: 'Bài học chỉ được hoàn thành sau khi trả lời và kiểm tra đủ 2 câu hỏi',
       })

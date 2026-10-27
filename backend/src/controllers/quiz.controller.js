@@ -13,8 +13,9 @@ export async function submitQuiz(req, res, next) {
       return res.status(400).json({ message: 'Dữ liệu nộp bài không hợp lệ' })
     }
 
+    const isPreview = Boolean(req.user?.role === 'admin')
     const lessons = await loadLessonSequence(req.user.id, normalizedChapterId)
-    if (!areAllLessonsCompleted(lessons)) {
+    if (!isPreview && !areAllLessonsCompleted(lessons)) {
       const firstIncomplete = lessons.find((lesson) => lesson.status !== 'completed')
       return res.status(403).json({
         message: firstIncomplete
@@ -80,12 +81,13 @@ export async function checkLessonQuiz(req, res, next) {
       return res.status(400).json({ message: 'Hãy chọn đáp án cho đúng 2 câu hỏi' })
     }
 
+    const isPreview = Boolean(req.user?.role === 'admin')
     const lessons = await loadLessonSequence(req.user.id, normalizedChapterId)
     const lessonIndex = findLessonIndex(lessons, normalizedLessonId)
     if (lessonIndex < 0) {
       return res.status(404).json({ message: 'Không tìm thấy bài học trong chương này' })
     }
-    if (!canAccessLesson(lessons, normalizedLessonId)) {
+    if (!isPreview && !canAccessLesson(lessons, normalizedLessonId)) {
       const prerequisite = lessons.slice(0, lessonIndex).find((lesson) => lesson.status !== 'completed')
       return res.status(409).json({
         message: `Hãy hoàn thành bài ${prerequisite.lesson_code} trước khi kiểm tra bài này`,

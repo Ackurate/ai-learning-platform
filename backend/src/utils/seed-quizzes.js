@@ -18,6 +18,7 @@ export async function seedQuizzes(conn, databaseDir) {
 
   await conn.beginTransaction()
   try {
+    await conn.execute('DELETE FROM questions')
     for (const question of questions) {
       const [existing] = await conn.execute(
         'SELECT question_id FROM questions WHERE chapter_id = ? AND content = ? LIMIT 1',

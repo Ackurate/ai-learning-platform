@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 import api from '../api/client.js'
 import AppShell from '../components/AppShell.jsx'
 import AskAI from '../components/AskAI.jsx'
 import Icon from '../components/HomeIcons.jsx'
 import { cleanTitle, toList } from '../utils/chapters.js'
+import { useAuth } from '../context/AuthContext.jsx'
 import {
   canAccessLesson,
   canNavigateToAnotherLesson,
@@ -17,9 +22,16 @@ function LessonMarkdown({ children }) {
   return (
     <div className="lesson-markdown">
       <ReactMarkdown
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={{
           h2: ({ children: heading }) => <h2>{heading}</h2>,
           h3: ({ children: heading }) => <h3>{heading}</h3>,
+          table: ({ children: tableContent }) => (
+            <div className="lesson-table-wrap">
+              <table>{tableContent}</table>
+            </div>
+          ),
           pre: ({ children: code }) => (
             <div className="lesson-code">
               <div className="lesson-code-head">
@@ -71,8 +83,10 @@ function QuestionOptions({ question, value, onChange, disabled }) {
 }
 
 export default function Lesson() {
+  const { user, previewUnlocked } = useAuth()
   const { chapterId } = useParams()
   const normalizedChapterId = Number(chapterId)
+  const userId = user?.user_id ?? user?.id
   const [phase, setPhase] = useState('loading')
   const [chapter, setChapter] = useState(null)
   const [lessons, setLessons] = useState([])
@@ -139,7 +153,7 @@ export default function Lesson() {
     return () => {
       ignore = true
     }
-  }, [normalizedChapterId, attempt])
+  }, [normalizedChapterId, attempt, userId])
 
   const activeIndex = lessons.findIndex((lesson) => lesson.lesson_code === activeLessonCode)
   const activeLesson = activeIndex >= 0 ? lessons[activeIndex] : null
@@ -201,13 +215,14 @@ export default function Lesson() {
     questionCount: selfCheckQuestions.length,
     answeredCount,
     checked: Boolean(quizResult),
+    isUnlocked: previewUnlocked,
   })
-  const canStartChapterQuiz = canTakeChapterQuiz(lessons, lessonProgress)
+  const canStartChapterQuiz = canTakeChapterQuiz(lessons, lessonProgress, previewUnlocked)
 
   const selectLesson = (lesson) => {
     if (lesson.lesson_code === activeLessonCode) return
     const targetIndex = lessons.findIndex((item) => item.lesson_id === lesson.lesson_id)
-    if (!canAccessLesson(lessons, lessonProgress, targetIndex)) {
+    if (!canAccessLesson(lessons, lessonProgress, targetIndex, previewUnlocked)) {
       setSubmitError('Hoàn thành các bài học phía trên trước khi chuyển tới bài này.')
       return
     }
@@ -216,7 +231,6 @@ export default function Lesson() {
       return
     }
     setActiveLessonCode(lesson.lesson_code)
-    setVisited((current) => current.includes(lesson.lesson_code) ? current : [...current, lesson.lesson_code])
     setQuestions([])
     setQuizPhase('loading')
     setAnswers({})
@@ -314,8 +328,8 @@ export default function Lesson() {
                   Trả lời đủ 2 câu và nhấn Kiểm tra để chuyển bài.
                 </p>
               )}
-              {canSwitchLessons && lessons.some((_, index) => (
-                !canAccessLesson(lessons, lessonProgress, index)
+              {canSwitchLessons && !previewUnlocked && lessons.some((_, index) => (
+                !canAccessLesson(lessons, lessonProgress, index, previewUnlocked)
               )) && (
                 <p className="lesson-navigation-hint">
                   Hoàn thành các bài học theo thứ tự để mở khóa bài tiếp theo.
@@ -327,7 +341,7 @@ export default function Lesson() {
                   const status = lessonProgress[lesson.lesson_id] ?? 'not_started'
                   const hasVisited = status !== 'not_started'
                   const completed = status === 'completed'
-                  const canAccess = canAccessLesson(lessons, lessonProgress, index)
+                  const canAccess = canAccessLesson(lessons, lessonProgress, index, previewUnlocked)
                   const disabled = !active && (!canSwitchLessons || !canAccess)
                   const disabledTitle = !canAccess
                     ? 'Hoàn thành các bài học phía trên để mở khóa'
@@ -478,8 +492,8 @@ export default function Lesson() {
                       <button
                         type="button"
                         onClick={() => selectLesson(lessons[activeIndex - 1])}
-                        disabled={!canSwitchLessons || !canAccessLesson(lessons, lessonProgress, activeIndex - 1)}
-                        title={!canAccessLesson(lessons, lessonProgress, activeIndex - 1)
+                        disabled={!canSwitchLessons || !canAccessLesson(lessons, lessonProgress, activeIndex - 1, previewUnlocked)}
+                        title={!canAccessLesson(lessons, lessonProgress, activeIndex - 1, previewUnlocked)
                           ? 'Hoàn thành các bài học phía trên để mở khóa'
                           : !canSwitchLessons ? 'Trả lời đủ 2 câu và kiểm tra trước khi chuyển bài' : undefined}
                       >
@@ -493,8 +507,8 @@ export default function Lesson() {
                       <button
                         type="button"
                         onClick={() => selectLesson(lessons[activeIndex + 1])}
-                        disabled={!canSwitchLessons || !canAccessLesson(lessons, lessonProgress, activeIndex + 1)}
-                        title={!canAccessLesson(lessons, lessonProgress, activeIndex + 1)
+                        disabled={!canSwitchLessons || !canAccessLesson(lessons, lessonProgress, activeIndex + 1, previewUnlocked)}
+                        title={!canAccessLesson(lessons, lessonProgress, activeIndex + 1, previewUnlocked)
                           ? 'Hoàn thành các bài học phía trên để mở khóa'
                           : !canSwitchLessons ? 'Trả lời đủ 2 câu và kiểm tra trước khi chuyển bài' : undefined}
                       >

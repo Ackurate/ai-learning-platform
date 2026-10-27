@@ -280,6 +280,41 @@ body:has(.app-shell) .navbar {
   display: none;
 }
 
+.as-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.as-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px dashed #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.as-preview-btn:hover {
+  background: #dbeafe;
+}
+
+.as-preview-btn.is-active {
+  border: 1px solid #059669;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.as-preview-btn.is-active:hover {
+  background: #d1fae5;
+}
+
 .as-account {
   display: flex;
   align-items: center;

@@ -20,8 +20,9 @@ export async function listByChapter(req, res, next) {
       return res.status(400).json({ message: 'Mã chương không hợp lệ' })
     }
 
+    const isPreview = Boolean(req.user?.role === 'admin')
     const lessons = await loadLessonSequence(req.user.id, chapterId)
-    if (!areAllLessonsCompleted(lessons)) {
+    if (!isPreview && !areAllLessonsCompleted(lessons)) {
       const firstIncomplete = lessons.find((lesson) => lesson.status !== 'completed')
       return res.status(403).json({
         message: firstIncomplete

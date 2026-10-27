@@ -9,7 +9,8 @@
     "test": "npm test --prefix backend",
     "build": "npm run build --prefix frontend",
     "db:setup": "npm run db:setup --prefix backend",
-    "db:seed-lessons": "npm run db:seed-lessons --prefix backend"
+    "db:seed-lessons": "npm run db:seed-lessons --prefix backend",
+    "role": "node backend/scripts/set-role.js"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"

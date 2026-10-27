@@ -130,3 +130,37 @@ test('records completion only after the first lesson self-check succeeds', async
   assert.equal(lessons[0].status, 'completed')
   assert.equal(calls.some(({ query }) => query.includes('INSERT INTO lesson_progress')), true)
 })
+
+
+test('allows viewing quiz and lessons when user has admin role', async (t) => {
+  withLessonSequence(t, [
+    { lesson_id: 11, lesson_code: '1.1', status: 'not_started' },
+    { lesson_id: 12, lesson_code: '1.2', status: 'not_started' },
+  ])
+
+  const questions = await invoke(listByChapter, {
+    user: { id: 42, role: 'admin' },
+    params: { chapterId: '1' },
+  })
+  assert.equal(questions.statusCode, 200)
+
+  const laterLesson = await invoke(updateLessonProgress, {
+    user: { id: 42, role: 'admin' },
+    params: { chapterId: '1', lessonId: '12' },
+    body: { status: 'in_progress' },
+  })
+  assert.equal(laterLesson.statusCode, 200)
+})
+
+test('blocks regular student from accessing locked quiz and lessons', async (t) => {
+  withLessonSequence(t, [
+    { lesson_id: 11, lesson_code: '1.1', status: 'not_started' },
+    { lesson_id: 12, lesson_code: '1.2', status: 'not_started' },
+  ])
+
+  const questions = await invoke(listByChapter, {
+    user: { id: 42, role: 'student' },
+    params: { chapterId: '1' },
+  })
+  assert.equal(questions.statusCode, 403)
+})

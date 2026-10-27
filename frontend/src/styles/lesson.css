@@ -993,3 +993,57 @@
     transition: none;
   }
 }
+
+
+/* Bảng dữ liệu Markdown (GFM tables) */
+.lesson-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.lesson-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #ffffff;
+  text-align: left;
+}
+
+.lesson-markdown thead {
+  background: #f8fafc;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.lesson-markdown th {
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.lesson-markdown td {
+  padding: 10px 16px;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  line-height: 1.5;
+}
+
+.lesson-markdown tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.lesson-markdown tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* KaTeX căn chỉnh inline và display */
+.katex-display {
+  margin: 14px 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 0;
+}

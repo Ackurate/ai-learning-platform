@@ -80,7 +80,7 @@ function StatCard({ label, value, caption, icon, progress }) {
 }
 
 export default function Dashboard() {
-  const { user, loading: authLoading } = useAuth()
+  const { user, loading: authLoading, previewUnlocked } = useAuth()
   const [data, setData] = useState({ chapters: [], progress: [], history: [] })
   const [phase, setPhase] = useState('loading')
   const [attempt, setAttempt] = useState(0)
@@ -110,8 +110,8 @@ export default function Dashboard() {
   }, [user, attempt])
 
   const chapterItems = useMemo(
-    () => buildChapterItems(data.chapters, data.progress),
-    [data.chapters, data.progress],
+    () => buildChapterItems(data.chapters, data.progress, previewUnlocked),
+    [data.chapters, data.progress, previewUnlocked],
   )
   const currentChapter = useMemo(() => pickCurrent(chapterItems), [chapterItems])
   const latestQuizByChapter = useMemo(() => {

@@ -97,3 +97,13 @@ test('keeps the chapter quiz locked until every lesson is completed', () => {
   assert.equal(canTakeChapterQuiz(lessons, { 1: 'completed', 2: 'completed', 3: 'completed' }), true)
   assert.equal(canTakeChapterQuiz([], {}), false)
 })
+
+
+test('allows navigation, access and quiz when isUnlocked is true', () => {
+  const lessons = [{ lesson_id: 1 }, { lesson_id: 2 }]
+  const progress = {}
+
+  assert.equal(canNavigateToAnotherLesson({ isUnlocked: true, checked: false, answeredCount: 0, questionCount: 2 }), true)
+  assert.equal(canAccessLesson(lessons, progress, 1, true), true)
+  assert.equal(canTakeChapterQuiz(lessons, progress, true), true)
+})
