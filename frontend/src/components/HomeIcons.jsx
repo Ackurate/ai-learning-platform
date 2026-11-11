@@ -7,6 +7,8 @@ const PATHS = {
       <path d="m12 5 7 7-7 7" />
     </>
   ),
+  'chevron-left': <path d="m15 18-6-6 6-6" />,
+  'chevron-right': <path d="m9 18 6-6-6-6" />,
   sprout: (
     <>
       <path d="M7 20h10" />
@@ -19,6 +21,18 @@ const PATHS = {
     <>
       <circle cx="12" cy="12" r="10" />
       <path d="m9 12 2 2 4-4" />
+    </>
+  ),
+  'shield-check': (
+    <>
+      <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
+  flag: (
+    <>
+      <path d="M4 22V4" />
+      <path d="M4 4c5-3 7 3 12 0v10c-5 3-7-3-12 0" />
     </>
   ),
   'file-code-2': (

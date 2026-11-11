@@ -23,3 +23,33 @@ export async function getChapter(req, res, next) {
     next(err)
   }
 }
+
+export async function listLessons(req, res, next) {
+  try {
+    const [rows] = await pool.execute(
+      `SELECT lesson_id, chapter_id, lesson_code, title, description, order_index, content
+       FROM lessons WHERE chapter_id = ? ORDER BY order_index, lesson_code`,
+      [req.params.chapterId],
+    )
+    res.json(rows)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function listLessonQuestions(req, res, next) {
+  try {
+    const [rows] = await pool.execute(
+      `SELECT lesson_question_id, lesson_id, chapter_id, question_index, content, question_type, options
+       FROM lesson_questions WHERE chapter_id = ? AND lesson_id = ? ORDER BY question_index`,
+      [req.params.chapterId, req.params.lessonId],
+    )
+    res.json(rows.map((question) => ({
+      ...question,
+      question_id: question.lesson_question_id,
+      options: typeof question.options === 'string' ? JSON.parse(question.options) : question.options,
+    })))
+  } catch (err) {
+    next(err)
+  }
+}

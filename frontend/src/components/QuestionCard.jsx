@@ -6,7 +6,7 @@ export default function QuestionCard({ index, question, value, onChange, result 
     <div className={`card ${result ? (result.is_correct ? 'correct' : 'wrong') : ''}`}>
       <p><strong>Câu {index + 1}.</strong> {question.content}</p>
 
-      {question.question_type === 'multiple_choice' ? (
+      {Array.isArray(question.options) && question.options.length > 0 ? (
         (question.options || []).map((opt) => (
           <label key={opt} className="option">
             <input

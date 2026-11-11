@@ -22,6 +22,44 @@ CREATE TABLE IF NOT EXISTS chapters (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 2. Bài học chi tiết, được nạp từ các file Markdown trong database/
+CREATE TABLE IF NOT EXISTS lessons (
+    lesson_id INT AUTO_INCREMENT PRIMARY KEY,
+    chapter_id INT NOT NULL,
+    lesson_code VARCHAR(20) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    order_index INT NOT NULL,
+    content MEDIUMTEXT NOT NULL,
+    FOREIGN KEY (chapter_id) REFERENCES chapters(chapter_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS lesson_progress (
+    lesson_progress_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    lesson_id INT NOT NULL,
+    status ENUM('in_progress', 'completed') NOT NULL DEFAULT 'in_progress',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE (user_id, lesson_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS lesson_questions (
+    lesson_question_id INT AUTO_INCREMENT PRIMARY KEY,
+    lesson_id INT NOT NULL,
+    chapter_id INT NOT NULL,
+    question_index INT NOT NULL,
+    content TEXT NOT NULL,
+    question_type VARCHAR(30) NOT NULL,
+    options JSON,
+    correct_answer TEXT NOT NULL,
+    explanation TEXT,
+    UNIQUE (lesson_id, question_index),
+    FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (chapter_id) REFERENCES chapters(chapter_id) ON DELETE CASCADE
+);
+
 -- 3. Bảng questions (Ngân hàng câu hỏi trắc nghiệm & code)
 CREATE TABLE IF NOT EXISTS questions (
     question_id INT AUTO_INCREMENT PRIMARY KEY,

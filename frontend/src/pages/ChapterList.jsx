@@ -9,7 +9,7 @@ import { buildChapterItems, cleanTitle, pickCurrent, toList } from '../utils/cha
 import '../styles/chapters.css';
 
 export default function ChapterList() {
-  const { user, loading } = useAuth();
+  const { user, loading, previewUnlocked } = useAuth();
   const loggedIn = Boolean(user);
 
   const [phase, setPhase] = useState('loading'); // loading | ready | error
@@ -36,7 +36,7 @@ export default function ChapterList() {
     };
   }, [loggedIn, attempt]);
 
-  const items = useMemo(() => buildChapterItems(data.chapters, data.progress), [data]);
+  const items = useMemo(() => buildChapterItems(data.chapters, data.progress, previewUnlocked), [data, previewUnlocked]);
   const current = useMemo(() => pickCurrent(items), [items]);
 
   if (loading) return null;

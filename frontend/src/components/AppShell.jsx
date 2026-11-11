@@ -19,8 +19,9 @@ const LEARN_ITEMS = [
   { key: 'learn', icon: 'book-open', label: 'Học C++', to: '/chapters' },
   // Tạm: chưa có trang riêng, trỏ về danh sách chương (chọn chương → làm trắc nghiệm / hỏi AI).
   { key: 'quiz', icon: 'square-terminal', label: 'Trắc nghiệm', to: '/chapters' },
-  { key: 'ai', icon: 'sparkles', label: 'AI Tutor', to: '/chapters' },
 ];
+
+const SIDEBAR_COLLAPSED_KEY = 'byte-cpp-sidebar-collapsed';
 
 function NavItem({ item, active, onClick }) {
   const className = `as-item${active ? ' is-active' : ''}`;
@@ -31,11 +32,11 @@ function NavItem({ item, active, onClick }) {
     </>
   );
   return item.to ? (
-    <Link to={item.to} className={className} aria-current={active ? 'page' : undefined} onClick={onClick}>
+    <Link to={item.to} className={className} title={item.label} aria-current={active ? 'page' : undefined} onClick={onClick}>
       {content}
     </Link>
   ) : (
-    <button type="button" className={className} onClick={onClick}>
+    <button type="button" className={className} title={item.label} onClick={onClick}>
       {content}
     </button>
   );
@@ -61,12 +62,19 @@ export default function AppShell({
   title = 'Học C++',
   subtitle = 'Kiến thức lý thuyết C++',
 }) {
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout, previewUnlocked, togglePreviewUnlocked } = useAuth();
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    () => window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true',
+  );
 
   const displayName = user?.username || user?.email || 'Tài khoản';
   const closeNav = () => setNavOpen(false);
+
+  useEffect(() => {
+    window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(sidebarCollapsed));
+  }, [sidebarCollapsed]);
 
   // Esc đóng ngăn kéo menu (mobile)
   useEffect(() => {
@@ -87,13 +95,26 @@ export default function AppShell({
   };
 
   return (
-    <div className={`app-shell${navOpen ? ' is-nav-open' : ''}`}>
+    <div className={`app-shell${navOpen ? ' is-nav-open' : ''}${sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}>
       <a className="as-skip" href="#main-content">
         Bỏ qua điều hướng
       </a>
 
       <aside className="as-sidebar" id="as-sidebar" aria-label="Điều hướng chính">
-        <Brand className="as-sidebar-brand" />
+        <div className="as-sidebar-top">
+          <Brand className="as-sidebar-brand" />
+          <button
+            type="button"
+            className="as-sidebar-toggle"
+            aria-label={sidebarCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}
+            aria-expanded={!sidebarCollapsed}
+            aria-controls="as-sidebar"
+            title={sidebarCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}
+            onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+          >
+            <Icon name={sidebarCollapsed ? 'chevron-right' : 'chevron-left'} size={18} />
+          </button>
+        </div>
 
         <nav className="as-group" aria-label="Học tập">
           <p className="as-group-label">HỌC TẬP</p>
@@ -124,12 +145,28 @@ export default function AppShell({
           {/* Tablet + mobile: thương hiệu */}
           <Brand className="as-head-brand" />
 
-          <div className="as-account">
-            <span className="as-avatar" aria-hidden="true">
-              {initials(displayName)}
-            </span>
-            <span className="as-account-name">{displayName}</span>
-            <Icon name="chevron-down" size={16} />
+          <div className="as-header-right">
+            {isAdmin && (
+              <button
+                type="button"
+                className={`as-preview-btn${previewUnlocked ? ' is-active' : ''}`}
+                onClick={() => togglePreviewUnlocked()}
+                title={
+                  previewUnlocked
+                    ? 'Đang mở khóa tất cả bài tập & quiz. Bấm để tắt. (Tự động xóa quyền khi đóng trình duyệt)'
+                    : 'Bấm để mở khóa xem tất cả bài tập & quiz cho phiên làm việc này. (Tự động xóa quyền khi đóng trình duyệt)'
+                }
+              >
+                <span>{previewUnlocked ? '🔓 Đang mở toàn bộ (Admin)' : '👁️ Mở khóa xem tất cả (Admin)'}</span>
+              </button>
+            )}
+
+            <div className="as-account">
+              <span className="as-avatar" aria-hidden="true">
+                {initials(displayName)}
+              </span>
+              <span className="as-account-name">{displayName}</span>
+            </div>
           </div>
 
           <button
